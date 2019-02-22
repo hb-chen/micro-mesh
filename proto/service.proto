@@ -1,0 +1,20 @@
+syntax = "proto3";
+package com.hbchen;
+option go_package = "proto";
+
+message ReqMessage {
+    string name = 1;
+}
+
+message RspMessage {
+    message Response {
+        string name = 1;
+    }
+    Response response = 2;
+    repeated string chain = 3;
+}
+
+service ExampleService {
+    rpc Call (ReqMessage) returns (RspMessage) {
+    }
+}

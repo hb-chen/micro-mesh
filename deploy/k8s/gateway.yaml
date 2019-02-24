@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: mm-example-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: http
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm-example
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - mm-example-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /v1/example
+    route:
+    - destination:
+        host: mm_example_api
+        port:
+          number: 9080

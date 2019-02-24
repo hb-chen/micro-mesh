@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: mm_example_api
+spec:
+  host: mm_example_api
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: mm_example_srv_1
+spec:
+  host: mm_example_srv_1
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: mm_example_srv_2
+spec:
+  host: mm_example_srv_2
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---

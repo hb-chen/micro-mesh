@@ -1,0 +1,118 @@
+##################################################################################################
+# SRV_1 service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: mm_example_srv_1
+  labels:
+    app: mm_example_srv_1
+spec:
+  ports:
+  - port: 9080
+    name: grpc
+  selector:
+    app: mm_example_srv_1
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mm_example_srv_1-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mm_example_srv_1
+        version: v1
+    spec:
+      containers:
+      - name: mm_example_srv_1
+        command: [
+          "/main",
+          "-grpc_addr=:9080",
+        ]
+        image: hbchen/micro-mesh-example-srv-1:v0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---
+##################################################################################################
+# SRV_1 service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: mm_example_srv_2
+  labels:
+    app: mm_example_srv_2
+spec:
+  ports:
+  - port: 9080
+    name: grpc
+  selector:
+    app: mm_example_srv_2
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mm_example_srv_2-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mm_example_srv_2
+        version: v1
+    spec:
+      containers:
+      - name: mm_example_srv_2
+        command: [
+          "/main",
+          "-grpc_addr=:9080",
+        ]
+        image: hbchen/micro-mesh-example-srv-2:v0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---
+##################################################################################################
+# API service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: mm_example_api
+  labels:
+    app: mm_example_api
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: mm_example_api
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mm_example_api-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mm_example_api
+        version: v1
+    spec:
+      containers:
+      - name: mm_example_api
+        command: [
+          "/main",
+          "-grpc_addr=:9080",
+          "-http_addr=:9080"
+        ]
+        image: hbchen/micro-mesh-example-api:v0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---

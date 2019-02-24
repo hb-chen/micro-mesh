@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm_example_api
+spec:
+  hosts:
+  - mm_example_api
+  http:
+  - route:
+    - destination:
+        host: mm_example_api
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm_example_srv_1
+spec:
+  hosts:
+  - mm_example_srv_1
+  http:
+  - route:
+    - destination:
+        host: mm_example_srv_1
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm_example_srv_2
+spec:
+  hosts:
+  - mm_example_srv_2
+  http:
+  - route:
+    - destination:
+        host: mm_example_srv_2
+        subset: v1

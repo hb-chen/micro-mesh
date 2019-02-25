@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: mm_example_api
+  name: mm-example-api
 spec:
   host: mm-example-api
   subsets:

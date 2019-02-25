@@ -1,0 +1,91 @@
+{
+	"variables": [],
+	"info": {
+		"name": "micro-mesh",
+		"_postman_id": "b2693305-25bf-f095-9862-65fe895d2dad",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/v1/example/call",
+			"request": {
+				"url": "http://{{HOST}}/v1/example/call/Hobo",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/example/call/responsebody",
+			"request": {
+				"url": "http://{{HOST}}/v1/example/call/responsebody/Hobo",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/example/call",
+			"request": {
+				"url": "http://{{HOST}}/v1/example/call",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Hobo\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/example/call/responsebody",
+			"request": {
+				"url": "http://{{HOST}}/v1/example/call/responsebody",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Hobo\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

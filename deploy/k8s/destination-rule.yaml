@@ -3,7 +3,7 @@ kind: DestinationRule
 metadata:
   name: mm_example_api
 spec:
-  host: mm_example_api
+  host: mm-example-api
   subsets:
   - name: v1
     labels:
@@ -12,9 +12,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: mm_example_srv_1
+  name: mm-example-srv-1
 spec:
-  host: mm_example_srv_1
+  host: mm-example-srv-1
   subsets:
   - name: v1
     labels:
@@ -23,9 +23,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: mm_example_srv_2
+  name: mm-example-srv-2
 spec:
-  host: mm_example_srv_2
+  host: mm-example-srv-2
   subsets:
   - name: v1
     labels:

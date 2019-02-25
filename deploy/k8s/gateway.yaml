@@ -28,6 +28,6 @@ spec:
         prefix: /v1/example
     route:
     - destination:
-        host: mm_example_api
+        host: mm-example-api
         port:
           number: 9080

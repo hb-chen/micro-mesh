@@ -5,6 +5,7 @@ import (
 	"flag"
 	"log"
 	"net"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -29,7 +30,7 @@ func (s *service) Call(ctx context.Context, in *pb.ReqMessage) (*pb.RspMessage, 
 	log.Printf("received: %v", in.Name)
 
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	addr := pb.Services_mm_example_srv_1.String() + grpcAddr
+	addr := strings.Replace(pb.Services_mm_example_srv_2.String(), "_", "-", -1) + grpcAddr
 	cc, err := grpc.Dial(addr, opts...)
 	if err != nil {
 		return nil, err

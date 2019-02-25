@@ -4,11 +4,11 @@ import (
 	"context"
 	"flag"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	pb "github.com/hb-go/micro-mesh/proto"
 	"google.golang.org/grpc"
 	"log"
 	"net/http"
-
-	pb "github.com/hb-go/micro-mesh/proto"
+	"strings"
 )
 
 var (
@@ -30,7 +30,7 @@ func (s *service) Call(ctx context.Context, in *pb.ReqMessage) (*pb.RspMessage, 
 	log.Printf("received: %v", in.Name)
 
 	// TODO cc pool
-	addr := pb.Services_mm_example_srv_1.String() + grpcAddr
+	addr := strings.Replace(pb.Services_mm_example_srv_1.String(), "_", "-", -1) + grpcAddr
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	cc, err := grpc.Dial(addr, opts...)
 	if err != nil {

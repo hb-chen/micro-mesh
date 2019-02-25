@@ -19,7 +19,7 @@ Micro Mesh
 - 服务
     - [ ] 同步&异步调用
     - [ ] 配置中心
--- CI/CD
+    - [ ] CI/CD
 
 ---
 ### Protoc

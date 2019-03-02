@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: auth-adapter
-        image: hbchen/istio-adapter-auth:latest
+        image: hbchen/istio-adapter-auth:v0.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 44225

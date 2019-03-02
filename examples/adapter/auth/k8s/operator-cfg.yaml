@@ -40,7 +40,7 @@ metadata:
   name: auth-rule
   namespace: istio-system
 spec:
-  match: destination.service == "mm-example-api"
+  match: request.host == "mm-example-api"
   actions:
   - handler: auth-handler.istio-system
     instances:

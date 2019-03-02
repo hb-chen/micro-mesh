@@ -1,0 +1,61 @@
+---
+title: adapter.auth.config
+layout: protoc-gen-docs
+generator: protoc-gen-docs
+number_of_entries: 1
+---
+<p>config for auth adapter</p>
+
+<h2 id="Params">Params</h2>
+<section>
+<p>config for auth adapter</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="Params-token">
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td>
+<p>test token</p>
+
+</td>
+</tr>
+<tr id="Params-config_store_url">
+<td><code>configStoreUrl</code></td>
+<td><code>string</code></td>
+<td>
+<p>URL for the config store. It is used to initiate a new Store instance.
+Following are some examples of the config store URL:
+* &ldquo;k8s://&rdquo;
+* &ldquo;fs:///tmp/testdata/configroot&rdquo;</p>
+
+</td>
+</tr>
+<tr id="Params-redis_server_url">
+<td><code>redisServerUrl</code></td>
+<td><code>string</code></td>
+<td>
+<p>Redis connection string <hostname>:<port number>
+ex) localhost:6379</p>
+
+</td>
+</tr>
+<tr id="Params-connection_pool_size">
+<td><code>connectionPoolSize</code></td>
+<td><code>int64</code></td>
+<td>
+<p>Maximum number of idle connections to redis
+Default is 10 connections per every CPU as reported by runtime.NumCPU.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>

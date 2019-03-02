@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// config for auth adapter
+package adapter.auth.config;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "config";
+
+// config for auth adapter
+message Params {
+
+    // test token
+    string token = 1;
+
+    // URL for the config store. It is used to initiate a new Store instance.
+    // Following are some examples of the config store URL:
+    // * "k8s://"
+    // * "fs:///tmp/testdata/configroot"
+    string config_store_url = 2;
+
+    // Redis connection string <hostname>:<port number>
+    // ex) localhost:6379
+    string redis_server_url = 3;
+
+    // Maximum number of idle connections to redis
+    // Default is 10 connections per every CPU as reported by runtime.NumCPU.
+    int64 connection_pool_size = 4;
+}

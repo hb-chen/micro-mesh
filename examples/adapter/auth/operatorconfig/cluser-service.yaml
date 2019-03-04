@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-adapter-service
+  name: mm-example-auth-adapter-service
   namespace: istio-system
   labels:
     app: auth-adapter
@@ -18,7 +18,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: auth-adapter
+  name: mm-example-auth-adapter
   namespace: istio-system
   labels:
     app: auth-adapter
@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: auth-adapter
-        image: hbchen/istio-adapter-auth:v0.0.1
+        image: hbchen/micro-mesh-example-auth-adapter:v0.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 44225

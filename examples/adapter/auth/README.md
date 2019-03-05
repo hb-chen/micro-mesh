@@ -24,8 +24,10 @@ config                      配置协议
   ├ config.proto            适配器服务启动配置
   └ config.proto_descriptor                     #go generate ./... 自动生成
 operatorconfig              k8s配置
+  ├ attributes.yaml         属性                  #copy istio/mixer/testdata/config/attributes.yaml
   ├ cluster-service.yaml    适配器服务实例
-  └ operator-cfg.yaml       适配器配置
+  ├ operator-cfg.yaml       适配器配置
+  └ template.yaml           属性与适配器输入模板    #copy istio/mixer/template/authorization/template.yaml
 testdata                    测试配置
   ├ attributes.yaml         属性                  #copy istio/mixer/testdata/config/attributes.yaml
   ├ auth-adapter.yaml       适配器描述文件         #copy config/auth-adapter.yaml

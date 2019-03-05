@@ -16,7 +16,7 @@ Micro Mesh
     - [x] k8s`.yaml`脚本
     - [x] `JWT`Gateway认证
     - [ ] `RBAC`服务间访问控制
-    - [ ] [自定义Adapter](/doc/adapter)
+    - [x] 自定义[auth-adapter](/examples/adapter/auth)
 - 服务
     - [ ] 同步&异步调用
     - [ ] 配置中心

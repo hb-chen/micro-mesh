@@ -1,4 +1,4 @@
-# handler for auth adapter
+# handler for adapter auth
 apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:
@@ -16,7 +16,8 @@ spec:
     redis_server_url: ""
     connection_pool_size: 1
 ---
-# instance for auth adapter
+
+# instance for template authorization
 apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
@@ -35,9 +36,10 @@ spec:
       namespace: destination.service.namespace
       service: destination.service.name
       method: request.method
-      path: request.method
+      path: request.path
 ---
-# rule to dispatch to auth-handler
+
+# rule to dispatch to handler mm-example-auth
 apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:

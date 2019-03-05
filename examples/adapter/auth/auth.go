@@ -28,7 +28,7 @@ type (
 		Run(shutdown chan error)
 	}
 
-	// AuthAdapter supports metric template.
+	// AuthAdapter supports authorization template.
 	AuthAdapter struct {
 		listener net.Listener
 		server   *grpc.Server
@@ -37,7 +37,7 @@ type (
 
 var _ authorization.HandleAuthorizationServiceServer = &AuthAdapter{}
 
-// HandleMetric records metric entries
+// HandleAuthorization token验证及访问控制
 func (s *AuthAdapter) HandleAuthorization(ctx context.Context, r *authorization.HandleAuthorizationRequest) (*v1beta1.CheckResult, error) {
 
 	log.Infof("received request %v\n", *r)

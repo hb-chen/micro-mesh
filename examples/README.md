@@ -29,3 +29,11 @@ $ curl -H "Authorization: Bearer $TOKEN" -X POST -d '{"name":"Hobo"}' http://35.
 - Import`micro-mesh.postman_collection.json` `micro-mesh.postman_environment.json`
 - `HOST`、`AUTH_TOKEN`环境变量修改
     - `curl https://raw.githubusercontent.com/istio/istio/release-1.1/security/tools/jwt/samples/demo.jwt -s`
+
+### Auth Adapter
+- JWT
+    - 服务端验证token有效性
+    - 应对密码修改、终端数量限制等场景
+- ACL
+    - 服务端获取用户角色，做API访问控制
+    - 用户角色及接口授权策略实时生效

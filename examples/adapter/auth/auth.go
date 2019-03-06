@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -82,7 +83,9 @@ func (s *AuthAdapter) HandleAuthorization(ctx context.Context, r *authorization.
 		if (k == "token") && v == cfg.Token {
 			log.Infof("success!!")
 			return &v1beta1.CheckResult{
-				Status: status.OK,
+				Status:        status.OK,
+				ValidDuration: time.Second * 3,
+				ValidUseCount: 3,
 			}, nil
 		}
 	}

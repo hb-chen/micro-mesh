@@ -82,17 +82,21 @@ make mixc
 cp {micro-mesh path}/examples/adapter/auth mixer/adapter/auth
 
 cd mixer/adapter/auth
+```
 
+**optional**
+```bash
 # 可以删除`config`目录除`config.proto`外的其他文件，看执行go generate后的结果
 go generate ./...
 go build ./...
 ```
+
 `go generate`根据`config/config.proto`以及`auth.go`的注释自动生成`config`目录下的其他文件:
 
+- adapter.auth.config.pb.html
+- auth-adapter.yaml
 - config.pb.go
 - config.proto_descriptor
-- auth-adapter.yaml
-- adapter.auth.config.pb.html
 
 根据`auth.go`的以下注释，`mixer_codegen.sh`使用`authorization`模板生成`name`为`auth-adapter`的适配器
 ```go

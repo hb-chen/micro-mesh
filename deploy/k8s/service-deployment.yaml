@@ -30,15 +30,16 @@ spec:
       - name: mm-example-srv-1
         command: [
           "/main",
-          "-grpc_addr=:9080",
+          "-serve_addr=:9080",
+          "-remote_addr=:9080"
         ]
-        image: hbchen/micro-mesh-example-srv-1:v0.0.2
+        image: hbchen/micro-mesh-example-srv-1:v0.0.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
 ---
 ##################################################################################################
-# SRV_1 service
+# SRV_2 service
 ##################################################################################################
 apiVersion: v1
 kind: Service
@@ -69,9 +70,10 @@ spec:
       - name: mm-example-srv-2
         command: [
           "/main",
-          "-grpc_addr=:9080",
+          "-serve_addr=:9080",
+          "-remote_addr=:9080"
         ]
-        image: hbchen/micro-mesh-example-srv-2:v0.0.1
+        image: hbchen/micro-mesh-example-srv-2:v0.0.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -108,10 +110,10 @@ spec:
       - name: mm-example-api
         command: [
           "/main",
-          "-grpc_addr=:9080",
-          "-http_addr=:9080"
+          "-serve_addr=:9080",
+          "-remote_addr=:9080"
         ]
-        image: hbchen/micro-mesh-example-api:v0.0.2
+        image: hbchen/micro-mesh-example-api:v0.0.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

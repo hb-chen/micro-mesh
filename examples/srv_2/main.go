@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"log"
 	"net"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -13,12 +15,14 @@ import (
 )
 
 var (
-	grpcAddr string
-	cmdHelp    bool
+	serveAddr string
+	remoteAddr string
+	cmdHelp  bool
 )
 
 func init() {
-	flag.StringVar(&grpcAddr, "grpc_addr", ":9080", "grpc server address.")
+	flag.StringVar(&serveAddr, "serve_addr", ":9080", "serve address.")
+	flag.StringVar(&remoteAddr, "remote_addr", ":9080", "remote address.")
 	flag.BoolVar(&cmdHelp, "h", false, "help")
 	flag.Parse()
 }
@@ -27,12 +31,24 @@ type service struct{}
 
 func (s *service) Call(ctx context.Context, in *pb.ReqMessage) (*pb.RspMessage, error) {
 	log.Printf("received: %v", in.Name)
-	return &pb.RspMessage{
+
+	nmd := metautils.ExtractIncoming(ctx)
+	rsp := &pb.RspMessage{
 		Response: &pb.RspMessage_Response{
 			Name: in.Name,
 		},
-		Chain: []string{"service_2"},
-	}, nil
+	}
+
+	chain := &pb.RspMessage_Chain{
+		ServiceName: pb.Services_mm_example_srv_2.String(),
+	}
+	if incoming, err := json.Marshal(nmd); err == nil {
+		chain.Ctx = string(incoming)
+	}
+
+	rsp.Chain = append(rsp.Chain, chain)
+
+	return rsp, nil
 }
 
 func main() {
@@ -41,7 +57,7 @@ func main() {
 		return
 	}
 
-	lis, err := net.Listen("tcp", grpcAddr)
+	lis, err := net.Listen("tcp", serveAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

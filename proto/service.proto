@@ -21,6 +21,11 @@ message RspMessage {
     message Response {
         string name = 1;
     }
+    message Chain {
+        string service_name = 1;
+        string ctx = 2;
+    }
+
     Response response = 2;
-    repeated string chain = 3;
+    repeated Chain chain = 3;
 }

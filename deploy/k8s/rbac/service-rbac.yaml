@@ -1,0 +1,80 @@
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ClusterRbacConfig
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mode: 'ON_WITH_INCLUSION'
+  inclusion:
+    namespaces: ["default"]
+    services: ["mm-example-api.default.svc.cluster.local", "mm-example-srv-1.default.svc.cluster.local", "mm-example-srv-2.default.svc.cluster.local"]
+  #ENFORCED/PERMISSIVE
+  enforcement_mode: ENFORCED
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: mm-example-api
+  namespace: default
+spec:
+  rules:
+  - services: ["mm-example-api.default.svc.cluster.local"]
+    methods: ["*"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: mm-example-api
+  namespace: default
+spec:
+  subjects:
+  - user: "*"
+  #- user: "cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"
+  roleRef:
+    kind: ServiceRole
+    name: "mm-example-api"
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: mm-example-srv-1
+  namespace: default
+spec:
+  rules:
+  - services: ["mm-example-srv-1.default.svc.cluster.local"]
+    methods: ["*"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: mm-example-srv-1
+  namespace: default
+spec:
+  subjects:
+  - user: "cluster.local/ns/default/sa/mm-example-api"
+  roleRef:
+    kind: ServiceRole
+    name: "mm-example-srv-1"
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: mm-example-srv-2
+  namespace: default
+spec:
+  rules:
+  - services: ["mm-example-srv-2.default.svc.cluster.local"]
+    methods: ["*"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: mm-example-srv-2
+  namespace: default
+spec:
+  subjects:
+  - user: "cluster.local/ns/default/sa/mm-example-srv-1"
+  roleRef:
+    kind: ServiceRole
+    name: "mm-example-srv-2"
+---

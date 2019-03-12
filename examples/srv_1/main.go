@@ -8,6 +8,8 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/hb-go/micro-mesh/examples/pkg/conv"
 	"google.golang.org/grpc"
@@ -76,7 +78,14 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(
+			grpc_recovery.UnaryServerInterceptor(),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_recovery.StreamServerInterceptor(),
+		),
+	)
 	srv := service{}
 	pb.RegisterExampleServiceServer(s, &srv)
 

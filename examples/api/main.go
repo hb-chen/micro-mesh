@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/hb-go/micro-mesh/examples/pkg/conv"
@@ -16,9 +18,9 @@ import (
 )
 
 var (
-	serveAddr string
+	serveAddr  string
 	remoteAddr string
-	cmdHelp  bool
+	cmdHelp    bool
 )
 
 func init() {
@@ -72,7 +74,14 @@ func main() {
 		return
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(
+			grpc_recovery.UnaryServerInterceptor(),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_recovery.StreamServerInterceptor(),
+		),
+	)
 	srv := service{}
 	pb.RegisterExampleServiceServer(s, &srv)
 

@@ -28,8 +28,7 @@ metadata:
   namespace: default
 spec:
   subjects:
-  - user: "*"
-  #- user: "cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"
+  - user: "cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"
   roleRef:
     kind: ServiceRole
     name: "mm-example-api"

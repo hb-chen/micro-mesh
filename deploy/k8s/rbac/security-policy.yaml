@@ -1,0 +1,12 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "mm-example-srv"
+spec:
+  targets:
+  - name: mm-example-api
+  - name: mm-example-srv-1
+  - name: mm-example-srv-2
+  peers:
+  - mtls: {}
+---

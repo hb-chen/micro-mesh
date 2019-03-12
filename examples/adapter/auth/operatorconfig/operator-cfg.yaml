@@ -46,7 +46,7 @@ metadata:
   name: mm-example-auth
   namespace: istio-system
 spec:
-  match: destination.service == "mm-example-api.default.svc.cluster.local"
+  match: destination.service.name == "mm-example-api"
   actions:
   - handler: mm-example-auth.handler
     instances:

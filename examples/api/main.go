@@ -37,6 +37,7 @@ func (s *service) Call(ctx context.Context, in *pb.ReqMessage) (*pb.RspMessage, 
 		Response: &pb.RspMessage_Response{Name: in.Name},
 	}
 
+	// 注意这里是ExtractOutgoing()
 	nmd := metautils.ExtractOutgoing(ctx)
 	if tier, err := strconv.Atoi(nmd.Get("x-tier")); nmd.Get("x-tier") == "" || (err == nil && tier > 0) {
 		// TODO cc pool

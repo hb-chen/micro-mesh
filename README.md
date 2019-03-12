@@ -3,7 +3,16 @@ Micro Mesh
 
 <a href="#">![micro-mesh](/doc/img/micro-mesh.jpg "micro-mesh")</a>
 
-目录
+**环境**
+
+- OSX
+- GKE **1.12.5-gke.10**
+- Go **1.11.1**
+- Istio **1.1.0-rc.3**
+- protoc **libprotoc 3.6.1**
+
+**目录**
+
 - [TODO](#TODO)
 - [Protoc](#Protoc)
 
@@ -15,7 +24,7 @@ Micro Mesh
 - Istio部署
     - [x] k8s`.yaml`脚本
     - [x] `JWT`Gateway认证
-    - [ ] `RBAC`服务间访问控制
+    - [x] `RBAC`服务间访问控制
     - [x] 自定义[auth-adapter](/examples/adapter/auth)
 - 服务
     - [ ] 同步&异步调用

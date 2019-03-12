@@ -45,15 +45,12 @@ Dockerfile                  Docker镜像
 步骤
 ---
 
-开发环境
+> 开发环境
 
-> OSX
-
-> Go **1.11.1**
-
-> protoc **libprotoc 3.6.1**
-
-> Istio **1.0.6**
+- OSX
+- Go **1.11.1**
+- protoc **libprotoc 3.6.1**
+- Istio **1.1.0-rc.3**
 
 ### 1.Istio源码
 ```bash
@@ -143,6 +140,11 @@ docker push hbchen/micro-mesh-example-adapter-auth:v0.0.1
 ```
 
 ### 7.Istio环境部署
+
+> 部署环境
+- GKE **1.12.5-gke.10**
+- Istio **1.1.0-rc.3**
+
 ```bash
 # 属性、模板
 # attributes.yaml -> istio/mixer/testdata/config/attributes.yaml 
@@ -157,7 +159,7 @@ kubectl apply -f examples/adapter/auth/config/auth-adapter.yaml
 
 - `handler`的`address`使用集群服务`"mm-example-auth-adapter-service:44225"`
 - `instance`的`params`根据`authorization`模板及`auth-adapter`服务的需求配置
-- `rule`的`match`条件使用`destination.service == "mm-example-api.default.svc.cluster.local"`，仅对`mm-example-api`服务生效
+- `rule`的`match`条件使用`destination.service.name == "mm-example-api"`或`destination.service.host == "mm-example-api.default.svc.cluster.local"`，仅对`mm-example-api`服务生效
 
 ```bash
 # 适配器服务实例部署
@@ -173,8 +175,8 @@ kubectl apply -f examples/adapter/auth/operatorconfig/operator-cfg.yaml
 ```bash
 TOKEN=$(curl https://raw.githubusercontent.com/istio/istio/release-1.1/security/tools/jwt/samples/demo.jwt -s)
 
-curl -H "Authorization: Bearer $TOKEN" -H "x-custom-token: efg" -X GET http://35.193.180.18/v1/example/call/Hobo
-curl -H "Authorization: Bearer $TOKEN" -H "x-custom-token: abc" -X GET http://35.193.180.18/v1/example/call/Hobo
+curl -H "Authorization: Bearer $TOKEN" -H "x-custom-token: efg" -H "Grpc-Metadata-x-tier: 2" -X GET http://35.192.111.18/v1/example/call/Hobo
+curl -H "Authorization: Bearer $TOKEN" -H "x-custom-token: abc" -H "Grpc-Metadata-x-tier: 2" -X GET http://35.192.111.18/v1/example/call/Hobo
 
 ```
 

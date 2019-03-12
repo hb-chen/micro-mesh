@@ -1,20 +1,12 @@
-apiVersion: "authentication.istio.io/v1alpha1"
-kind: "Policy"
-metadata:
-  name: "mm-example-srv"
-spec:
-  targets:
-  - name: mm-example-srv-1
-  - name: mm-example-srv-2
-  peers:
-  - mtls: {}
----
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: mm-example-api
 spec:
   host: mm-example-api
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:

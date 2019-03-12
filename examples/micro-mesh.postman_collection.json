@@ -10,12 +10,22 @@
 		{
 			"name": "/v1/example/call",
 			"request": {
-				"url": "http://{{HOST}}/v1/example/call/Hobo",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/Hobo",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
 						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "x-custom-token",
+						"value": "{{X_CUSTOM_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "Grpc-Metadata-x-tier",
+						"value": "{{X_TIER}}",
 						"description": ""
 					}
 				],
@@ -37,6 +47,16 @@
 						"key": "Authorization",
 						"value": "{{AUTH_TOKEN}}",
 						"description": ""
+					},
+					{
+						"key": "x-custom-token",
+						"value": "{{X_CUSTOM_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "Grpc-Metadata-x-tier",
+						"value": "{{X_TIER}}",
+						"description": ""
 					}
 				],
 				"body": {
@@ -57,6 +77,16 @@
 						"key": "Authorization",
 						"value": "{{AUTH_TOKEN}}",
 						"description": ""
+					},
+					{
+						"key": "x-custom-token",
+						"value": "{{X_CUSTOM_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "Grpc-Metadata-x-tier",
+						"value": "{{X_TIER}}",
+						"description": ""
 					}
 				],
 				"body": {
@@ -76,6 +106,16 @@
 					{
 						"key": "Authorization",
 						"value": "{{AUTH_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "x-custom-token",
+						"value": "{{X_CUSTOM_TOKEN}}",
+						"description": ""
+					},
+					{
+						"key": "Grpc-Metadata-x-tier",
+						"value": "{{X_TIER}}",
 						"description": ""
 					}
 				],

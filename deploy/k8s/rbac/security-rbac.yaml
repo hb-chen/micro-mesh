@@ -6,7 +6,7 @@ metadata:
 spec:
   mode: 'ON_WITH_INCLUSION'
   inclusion:
-    namespaces: ["default"]
+    #namespaces: ["default"]
     services: ["mm-example-api.default.svc.cluster.local", "mm-example-srv-1.default.svc.cluster.local", "mm-example-srv-2.default.svc.cluster.local"]
   #ENFORCED/PERMISSIVE
   enforcement_mode: ENFORCED

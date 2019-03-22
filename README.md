@@ -8,7 +8,7 @@ Micro Mesh
 - OSX
 - GKE **1.12.5-gke.10**
 - Go **1.11.1**
-- Istio **1.1.0-rc.3**
+- Istio **1.1.0**
 - protoc **libprotoc 3.6.1**
 
 **目录**

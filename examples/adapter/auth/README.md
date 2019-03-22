@@ -50,7 +50,7 @@ Dockerfile                  Docker镜像
 - OSX
 - Go **1.11.1**
 - protoc **libprotoc 3.6.1**
-- Istio **1.1.0-rc.3**
+- Istio **1.1.**
 
 ### 1.Istio源码
 ```bash
@@ -143,7 +143,7 @@ docker push hbchen/micro-mesh-example-adapter-auth:v0.0.1
 
 > 部署环境
 - GKE **1.12.5-gke.10**
-- Istio **1.1.0-rc.3**
+- Istio **1.1.0**
 
 ```bash
 # 属性、模板

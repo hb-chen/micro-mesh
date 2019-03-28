@@ -7,20 +7,25 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/hb-go/micro-mesh/examples/pkg/conv"
-	pb "github.com/hb-go/micro-mesh/proto"
 	"google.golang.org/grpc"
+
+	"github.com/hb-go/micro-mesh/examples/pkg/conv"
+	"github.com/hb-go/micro-mesh/pkg/client"
+	pb "github.com/hb-go/micro-mesh/proto"
 )
 
 var (
 	serveAddr  string
 	remoteAddr string
 	cmdHelp    bool
+
+	pool *client.Pool
 )
 
 func init() {
@@ -28,6 +33,8 @@ func init() {
 	flag.StringVar(&remoteAddr, "remote_addr", ":9080", "remote address.")
 	flag.BoolVar(&cmdHelp, "h", false, "help")
 	flag.Parse()
+
+	pool = client.NewPool(10, time.Minute)
 }
 
 type service struct{}
@@ -45,12 +52,14 @@ func (s *service) Call(ctx context.Context, in *pb.ReqMessage) (*pb.RspMessage, 
 		// TODO cc pool
 		addr := conv.ServiceTargetParse(pb.Services_mm_example_srv_1.String(), remoteAddr)
 		opts := []grpc.DialOption{grpc.WithInsecure()}
-		cc, err := grpc.Dial(addr, opts...)
+
+		cc, err := pool.Get(addr, opts...)
 		if err != nil {
 			return nil, err
 		}
+		rsp, err = pb.NewExampleServiceClient(cc.GetCC()).Call(ctx, in)
+		pool.Put(addr, cc, err)
 
-		rsp, err = pb.NewExampleServiceClient(cc).Call(ctx, in)
 		if err != nil {
 			return nil, err
 		}

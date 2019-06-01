@@ -37,9 +37,14 @@ Micro Mesh
 ##### 安装
 
 ```bash
-go get -u github.com/hb-go/grpc-gateway/protoc-gen-grpc-gateway
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
+
+# 使用fork grpc-gateway的protoc-gen-grpc-gateway
+cd $GOPATH/src/github.com/grpc-ecosystem
+git clone github.com/hb-go/grpc-gateway
+make bin/protoc-gen-grpc-gateway
+mv bin/protoc-gen-grpc-gateway $GOPATH/bin/protoc-gen-grpc-gateway
 ```
 
 ##### 代码生成

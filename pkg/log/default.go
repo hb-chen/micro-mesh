@@ -11,6 +11,17 @@ type defaultLogger struct {
 	calldepth int
 }
 
+func NewLogger() *defaultLogger {
+	return &defaultLogger{
+		Logger:    log.New(os.Stderr, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Llongfile),
+		calldepth: 3,
+	}
+}
+
+func (l *defaultLogger) SetCalldepth(calldepth int) {
+	l.calldepth = calldepth
+}
+
 func (l *defaultLogger) Debug(v ...interface{}) {
 	l.output(DEBUG, v...)
 }
@@ -54,27 +65,31 @@ func (l *defaultLogger) Fatalf(format string, v ...interface{}) {
 }
 
 func (l *defaultLogger) Panic(v ...interface{}) {
-	l.Logger.Panic(v)
+	s := fmt.Sprint(v...)
+	l.output(panicLvl, s)
+	panic(s)
 }
 
 func (l *defaultLogger) Panicf(format string, v ...interface{}) {
-	l.Logger.Panicf(format, v...)
+	s := fmt.Sprintf(format, v...)
+	l.output(panicLvl, s)
+	panic(s)
 }
 
 func (l *defaultLogger) output(lvl Lvl, v ...interface{}) {
 	if lvl < level {
 		return
 	}
-	l.Output(calldepth, header(lvl, fmt.Sprint(v...)))
+	l.Output(l.calldepth, header(lvl, fmt.Sprint(v...)))
 }
 
 func (l *defaultLogger) outputf(lvl Lvl, format string, v ...interface{}) {
 	if lvl < level {
 		return
 	}
-	l.Output(calldepth, header(lvl, fmt.Sprintf(format, v...)))
+	l.Output(l.calldepth, header(lvl, fmt.Sprintf(format, v...)))
 }
 
 func header(lvl Lvl, msg string) string {
-	return fmt.Sprintf("[%s] \"%s\"", lvl.String(), msg)
+	return fmt.Sprintf("[%s] %s", lvl.String(), msg)
 }

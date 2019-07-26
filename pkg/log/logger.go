@@ -1,8 +1,7 @@
 package log
 
 import (
-	"log"
-	"os"
+	"io"
 
 	"github.com/fatih/color"
 )
@@ -17,15 +16,15 @@ const (
 	panicLvl
 )
 
-const (
-	calldepth = 4
-)
-
 var (
 	level       = DEBUG
 	colorEnable = true
-	l           = &defaultLogger{Logger: log.New(os.Stderr, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile), calldepth: calldepth}
+	global      = NewLogger()
 )
+
+func init() {
+	global.SetCalldepth(4)
+}
 
 type (
 	Lvl       uint
@@ -35,7 +34,7 @@ type (
 func (lvl Lvl) String() string {
 	switch lvl {
 	case DEBUG:
-		return "DEBUG"
+		return lvl.colorString("DEBUG", color.WhiteString)
 	case INFO:
 		return lvl.colorString("INFO", color.GreenString)
 	case WARN:
@@ -43,11 +42,11 @@ func (lvl Lvl) String() string {
 	case ERROR:
 		return lvl.colorString("ERROR", color.RedString)
 	case fatalLvl:
-		return lvl.colorString("FATAL", color.MagentaString)
+		return lvl.colorString("FATAL", color.HiRedString)
 	case panicLvl:
-		return "PANIC"
+		return lvl.colorString("PANIC", color.HiRedString)
 	default:
-		return ""
+		return lvl.colorString("-", color.WhiteString)
 	}
 }
 
@@ -67,44 +66,60 @@ func SetColor(enable bool) {
 	colorEnable = enable
 }
 
+func SetPrefix(prefix string) {
+	global.SetPrefix(prefix)
+}
+
+func SetOutput(w io.Writer) {
+	global.SetOutput(w)
+}
+
+func SetFlags(flag int) {
+	global.SetFlags(flag)
+}
+
+func SetCalldepth(calldepth int) {
+	global.SetCalldepth(calldepth)
+}
+
 func Debug(v ...interface{}) {
-	l.Debug(v...)
+	global.Debug(v...)
 }
 func Debugf(format string, v ...interface{}) {
-	l.Debugf(format, v...)
+	global.Debugf(format, v...)
 }
 
 func Info(v ...interface{}) {
-	l.Info(v...)
+	global.Info(v...)
 }
 func Infof(format string, v ...interface{}) {
-	l.Infof(format, v...)
+	global.Infof(format, v...)
 }
 
 func Warn(v ...interface{}) {
-	l.Warn(v...)
+	global.Warn(v...)
 }
 func Warnf(format string, v ...interface{}) {
-	l.Warnf(format, v...)
+	global.Warnf(format, v...)
 }
 
 func Error(v ...interface{}) {
-	l.Error(v...)
+	global.Error(v...)
 }
 func Errorf(format string, v ...interface{}) {
-	l.Errorf(format, v...)
+	global.Errorf(format, v...)
 }
 
 func Fatal(v ...interface{}) {
-	l.Fatal(v...)
+	global.Fatal(v...)
 }
 func Fatalf(format string, v ...interface{}) {
-	l.Fatalf(format, v...)
+	global.Fatalf(format, v...)
 }
 
 func Panic(v ...interface{}) {
-	l.Panic(v...)
+	global.Panic(v...)
 }
 func Panicf(format string, v ...interface{}) {
-	l.Panicf(format, v...)
+	global.Panicf(format, v...)
 }

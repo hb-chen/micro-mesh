@@ -19,6 +19,11 @@ const Schema = "go-micro"
 const watchLimit = 1.0
 const watchBurst = 3
 
+func init() {
+	r := NewBuilder()
+	resolver.Register(r)
+}
+
 // implementation of grpc.resolve.Builder
 type microBuilder struct {
 	registry registry.Registry
@@ -49,6 +54,14 @@ type microResolver struct {
 	cc    resolver.ClientConn
 }
 
+func NewTarget(name, version string) string {
+	if version == "" {
+		return Schema + ":///" + name
+	}
+
+	return Schema + ":///" + name + "?version=" + version
+}
+
 // NewBuilder return resolver builder
 func NewBuilder() resolver.Builder {
 	return &microBuilder{
@@ -62,10 +75,9 @@ func (b *microBuilder) Scheme() string {
 }
 
 // Build to resolver.Resolver
-// target:schema://[authority]/{serviceName}[?version=v1]
+// target: {schema}://[authority]/{serviceName}[?version=v1]
 // target使用query参数做version筛选
 func (b *microBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOption) (resolver.Resolver, error) {
-	log.Infof("build with target: %v", target)
 	var serviceName, serviceVersion string
 	if c := strings.Count(target.Endpoint, "?"); c > 0 {
 		if u, err := url.Parse(target.Endpoint); err == nil {
@@ -78,8 +90,6 @@ func (b *microBuilder) Build(target resolver.Target, cc resolver.ClientConn, opt
 	} else {
 		serviceName = target.Endpoint
 	}
-
-	log.Infof("service name: %v, version: %v", serviceName, serviceVersion)
 
 	b.mu.Lock()
 	s, ok := b.resolvers[serviceName]

@@ -36,11 +36,12 @@ func Register(name, version, address string) error {
 	if err != nil {
 		return err
 	}
+	addr = net.JoinHostPort(addr, port)
 
 	// register service
 	node := &registry.Node{
-		Id:      name + "" + address,
-		Address: net.JoinHostPort(addr, port),
+		Id:      name + "-" + addr,
+		Address: addr,
 	}
 	service := &registry.Service{
 		Name:    name,

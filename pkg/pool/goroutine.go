@@ -15,7 +15,9 @@
 package pool
 
 import (
+	"errors"
 	"sync"
+	"time"
 )
 
 // WorkFunc represents a function to invoke from a worker. The parameter is passed on the side
@@ -24,6 +26,8 @@ type WorkFunc func(param interface{})
 
 // GoroutinePool represents a set of reusable goroutines onto which work can be scheduled.
 type GoroutinePool struct {
+	count          int64
+	depth          int64
 	queue          chan work      // Channel providing the work that needs to be executed
 	wg             sync.WaitGroup // Used to block shutdown until all workers complete
 	singleThreaded bool           // Whether to actually use goroutines or not
@@ -70,6 +74,22 @@ func (gp *GoroutinePool) ScheduleWork(fn WorkFunc, param interface{}) {
 	} else {
 		gp.queue <- work{fn: fn, param: param}
 	}
+}
+
+func (gp *GoroutinePool) ScheduleWorkWithTimeout(fn WorkFunc, param interface{}, d time.Duration) error {
+	if gp.singleThreaded {
+		fn(param)
+	} else {
+		tc := time.NewTimer(d)
+		select {
+		case <-tc.C:
+			return errors.New("timeout")
+		case gp.queue <- work{fn: fn, param: param}:
+			return nil
+		}
+	}
+
+	return nil
 }
 
 // AddWorkers introduces more goroutines in the worker pool, increasing potential parallelism.

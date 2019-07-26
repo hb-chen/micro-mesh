@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 )
 
 type Pool struct {
@@ -40,10 +41,10 @@ func (p *Pool) Get(addr string, opts ...grpc.DialOption) (*poolConn, error) {
 		conns = conns[:len(conns)-1]
 		p.conns[addr] = conns
 
-		// if conn is old kill it and move on
-
-		if d := now - conn.created; d > p.ttl {
+		// if conn is old or not ready kill it and move on
+		if d := now - conn.created; d > p.ttl || conn.cc.GetState() != connectivity.Ready {
 			conn.cc.Close()
+			continue
 		}
 
 		// we got a good conn, lets unlock and return it

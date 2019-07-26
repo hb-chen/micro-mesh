@@ -116,8 +116,7 @@ func benchPool(t *testing.B, addr string, p *Pool) {
 }
 
 // Benchmark
-// go test ./pkg/client -test.bench=".*"
-
+// go test ./grpc/client -test.bench=".*"
 func Benchmark_GRPCPool_0(b *testing.B) {
 	b.StopTimer()
 

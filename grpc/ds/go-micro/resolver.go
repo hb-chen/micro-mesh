@@ -1,4 +1,4 @@
-package etcdv3
+package grpcds
 
 import (
 	"context"
@@ -35,7 +35,7 @@ type service struct {
 
 	mu       sync.RWMutex
 	watching bool
-	nodes    map[string][]resolver.Address // TODO 多版本
+	nodes    map[string][]resolver.Address
 
 	conns     sync.Map
 	connIndex int64

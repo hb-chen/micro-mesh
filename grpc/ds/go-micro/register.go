@@ -1,4 +1,4 @@
-package etcdv3
+package grpcds
 
 import (
 	"log"
@@ -13,6 +13,7 @@ import (
 var deregisterCh = make(chan struct{})
 
 func init() {
+	// TODO Registry配置及初始化
 	registry.DefaultRegistry = consul.NewRegistry()
 }
 

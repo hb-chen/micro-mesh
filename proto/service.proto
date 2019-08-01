@@ -2,30 +2,43 @@ syntax = "proto3";
 package com.hbchen;
 option go_package = "proto";
 
-enum Services {
-    mm_example_api = 0;
-    mm_example_srv_1 = 1;
-    mm_example_srv_2 = 2;
-}
-
 service ExampleService {
-    rpc Call (ReqMessage) returns (RspMessage) {
+    rpc ApiCall (ApiRequest) returns (Response) {
+    }
+    rpc Call (Request) returns (Response) {
     }
 }
 
-message ReqMessage {
+message ApiRequest {
     string name = 1;
+    string services = 2;
 }
 
-message RspMessage {
-    message Response {
-        string name = 1;
-    }
+message Request {
+    string name = 1;
+    string version = 2;
+    repeated Service services = 3;
+}
+
+message Response {
     message Chain {
-        string service_name = 1;
+        Service service = 1;
         string ctx = 2;
+        repeated Chain chain = 3;
     }
 
-    Response response = 2;
-    repeated Chain chain = 3;
+    string msg = 1;
+    repeated Chain chain = 2;
+}
+
+message Node {
+    string id = 1;
+    string host = 2;
+}
+
+message Service {
+    string name = 1;
+    string version = 2;
+    Node node = 3;
+    repeated Service services = 4;
 }

@@ -3,13 +3,14 @@
 
 package proto
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,208 +22,356 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Services int32
-
-const (
-	Services_mm_example_api   Services = 0
-	Services_mm_example_srv_1 Services = 1
-	Services_mm_example_srv_2 Services = 2
-)
-
-var Services_name = map[int32]string{
-	0: "mm_example_api",
-	1: "mm_example_srv_1",
-	2: "mm_example_srv_2",
-}
-var Services_value = map[string]int32{
-	"mm_example_api":   0,
-	"mm_example_srv_1": 1,
-	"mm_example_srv_2": 2,
-}
-
-func (x Services) String() string {
-	return proto.EnumName(Services_name, int32(x))
-}
-func (Services) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_service_e90d706a5e39d8ba, []int{0}
-}
-
-type ReqMessage struct {
+type ApiRequest struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Services             string   `protobuf:"bytes,2,opt,name=services,proto3" json:"services,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ReqMessage) Reset()         { *m = ReqMessage{} }
-func (m *ReqMessage) String() string { return proto.CompactTextString(m) }
-func (*ReqMessage) ProtoMessage()    {}
-func (*ReqMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_e90d706a5e39d8ba, []int{0}
-}
-func (m *ReqMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ReqMessage.Unmarshal(m, b)
-}
-func (m *ReqMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ReqMessage.Marshal(b, m, deterministic)
-}
-func (dst *ReqMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ReqMessage.Merge(dst, src)
-}
-func (m *ReqMessage) XXX_Size() int {
-	return xxx_messageInfo_ReqMessage.Size(m)
-}
-func (m *ReqMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_ReqMessage.DiscardUnknown(m)
+func (m *ApiRequest) Reset()         { *m = ApiRequest{} }
+func (m *ApiRequest) String() string { return proto.CompactTextString(m) }
+func (*ApiRequest) ProtoMessage()    {}
+func (*ApiRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{0}
 }
 
-var xxx_messageInfo_ReqMessage proto.InternalMessageInfo
+func (m *ApiRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ApiRequest.Unmarshal(m, b)
+}
+func (m *ApiRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ApiRequest.Marshal(b, m, deterministic)
+}
+func (m *ApiRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApiRequest.Merge(m, src)
+}
+func (m *ApiRequest) XXX_Size() int {
+	return xxx_messageInfo_ApiRequest.Size(m)
+}
+func (m *ApiRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApiRequest.DiscardUnknown(m)
+}
 
-func (m *ReqMessage) GetName() string {
+var xxx_messageInfo_ApiRequest proto.InternalMessageInfo
+
+func (m *ApiRequest) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-type RspMessage struct {
-	Response             *RspMessage_Response `protobuf:"bytes,2,opt,name=response,proto3" json:"response,omitempty"`
-	Chain                []*RspMessage_Chain  `protobuf:"bytes,3,rep,name=chain,proto3" json:"chain,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
-	XXX_unrecognized     []byte               `json:"-"`
-	XXX_sizecache        int32                `json:"-"`
-}
-
-func (m *RspMessage) Reset()         { *m = RspMessage{} }
-func (m *RspMessage) String() string { return proto.CompactTextString(m) }
-func (*RspMessage) ProtoMessage()    {}
-func (*RspMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_e90d706a5e39d8ba, []int{1}
-}
-func (m *RspMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_RspMessage.Unmarshal(m, b)
-}
-func (m *RspMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_RspMessage.Marshal(b, m, deterministic)
-}
-func (dst *RspMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RspMessage.Merge(dst, src)
-}
-func (m *RspMessage) XXX_Size() int {
-	return xxx_messageInfo_RspMessage.Size(m)
-}
-func (m *RspMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_RspMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_RspMessage proto.InternalMessageInfo
-
-func (m *RspMessage) GetResponse() *RspMessage_Response {
+func (m *ApiRequest) GetServices() string {
 	if m != nil {
-		return m.Response
+		return m.Services
+	}
+	return ""
+}
+
+type Request struct {
+	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Version              string     `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	Services             []*Service `protobuf:"bytes,3,rep,name=services,proto3" json:"services,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *Request) Reset()         { *m = Request{} }
+func (m *Request) String() string { return proto.CompactTextString(m) }
+func (*Request) ProtoMessage()    {}
+func (*Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{1}
+}
+
+func (m *Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Request.Unmarshal(m, b)
+}
+func (m *Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
+}
+func (m *Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Request.Merge(m, src)
+}
+func (m *Request) XXX_Size() int {
+	return xxx_messageInfo_Request.Size(m)
+}
+func (m *Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Request proto.InternalMessageInfo
+
+func (m *Request) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Request) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *Request) GetServices() []*Service {
+	if m != nil {
+		return m.Services
 	}
 	return nil
 }
 
-func (m *RspMessage) GetChain() []*RspMessage_Chain {
+type Response struct {
+	Msg                  string            `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	Chain                []*Response_Chain `protobuf:"bytes,2,rep,name=chain,proto3" json:"chain,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *Response) Reset()         { *m = Response{} }
+func (m *Response) String() string { return proto.CompactTextString(m) }
+func (*Response) ProtoMessage()    {}
+func (*Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{2}
+}
+
+func (m *Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Response.Unmarshal(m, b)
+}
+func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+}
+func (m *Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Response.Merge(m, src)
+}
+func (m *Response) XXX_Size() int {
+	return xxx_messageInfo_Response.Size(m)
+}
+func (m *Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Response proto.InternalMessageInfo
+
+func (m *Response) GetMsg() string {
+	if m != nil {
+		return m.Msg
+	}
+	return ""
+}
+
+func (m *Response) GetChain() []*Response_Chain {
 	if m != nil {
 		return m.Chain
 	}
 	return nil
 }
 
-type RspMessage_Response struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type Response_Chain struct {
+	Service              *Service          `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
+	Ctx                  string            `protobuf:"bytes,2,opt,name=ctx,proto3" json:"ctx,omitempty"`
+	Chain                []*Response_Chain `protobuf:"bytes,3,rep,name=chain,proto3" json:"chain,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
-func (m *RspMessage_Response) Reset()         { *m = RspMessage_Response{} }
-func (m *RspMessage_Response) String() string { return proto.CompactTextString(m) }
-func (*RspMessage_Response) ProtoMessage()    {}
-func (*RspMessage_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_e90d706a5e39d8ba, []int{1, 0}
-}
-func (m *RspMessage_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_RspMessage_Response.Unmarshal(m, b)
-}
-func (m *RspMessage_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_RspMessage_Response.Marshal(b, m, deterministic)
-}
-func (dst *RspMessage_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RspMessage_Response.Merge(dst, src)
-}
-func (m *RspMessage_Response) XXX_Size() int {
-	return xxx_messageInfo_RspMessage_Response.Size(m)
-}
-func (m *RspMessage_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_RspMessage_Response.DiscardUnknown(m)
+func (m *Response_Chain) Reset()         { *m = Response_Chain{} }
+func (m *Response_Chain) String() string { return proto.CompactTextString(m) }
+func (*Response_Chain) ProtoMessage()    {}
+func (*Response_Chain) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{2, 0}
 }
 
-var xxx_messageInfo_RspMessage_Response proto.InternalMessageInfo
+func (m *Response_Chain) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Response_Chain.Unmarshal(m, b)
+}
+func (m *Response_Chain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Response_Chain.Marshal(b, m, deterministic)
+}
+func (m *Response_Chain) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Response_Chain.Merge(m, src)
+}
+func (m *Response_Chain) XXX_Size() int {
+	return xxx_messageInfo_Response_Chain.Size(m)
+}
+func (m *Response_Chain) XXX_DiscardUnknown() {
+	xxx_messageInfo_Response_Chain.DiscardUnknown(m)
+}
 
-func (m *RspMessage_Response) GetName() string {
+var xxx_messageInfo_Response_Chain proto.InternalMessageInfo
+
+func (m *Response_Chain) GetService() *Service {
 	if m != nil {
-		return m.Name
+		return m.Service
 	}
-	return ""
+	return nil
 }
 
-type RspMessage_Chain struct {
-	ServiceName          string   `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
-	Ctx                  string   `protobuf:"bytes,2,opt,name=ctx,proto3" json:"ctx,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *RspMessage_Chain) Reset()         { *m = RspMessage_Chain{} }
-func (m *RspMessage_Chain) String() string { return proto.CompactTextString(m) }
-func (*RspMessage_Chain) ProtoMessage()    {}
-func (*RspMessage_Chain) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_e90d706a5e39d8ba, []int{1, 1}
-}
-func (m *RspMessage_Chain) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_RspMessage_Chain.Unmarshal(m, b)
-}
-func (m *RspMessage_Chain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_RspMessage_Chain.Marshal(b, m, deterministic)
-}
-func (dst *RspMessage_Chain) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RspMessage_Chain.Merge(dst, src)
-}
-func (m *RspMessage_Chain) XXX_Size() int {
-	return xxx_messageInfo_RspMessage_Chain.Size(m)
-}
-func (m *RspMessage_Chain) XXX_DiscardUnknown() {
-	xxx_messageInfo_RspMessage_Chain.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_RspMessage_Chain proto.InternalMessageInfo
-
-func (m *RspMessage_Chain) GetServiceName() string {
-	if m != nil {
-		return m.ServiceName
-	}
-	return ""
-}
-
-func (m *RspMessage_Chain) GetCtx() string {
+func (m *Response_Chain) GetCtx() string {
 	if m != nil {
 		return m.Ctx
 	}
 	return ""
 }
 
+func (m *Response_Chain) GetChain() []*Response_Chain {
+	if m != nil {
+		return m.Chain
+	}
+	return nil
+}
+
+type Node struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Host                 string   `protobuf:"bytes,2,opt,name=host,proto3" json:"host,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Node) Reset()         { *m = Node{} }
+func (m *Node) String() string { return proto.CompactTextString(m) }
+func (*Node) ProtoMessage()    {}
+func (*Node) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{3}
+}
+
+func (m *Node) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Node.Unmarshal(m, b)
+}
+func (m *Node) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Node.Marshal(b, m, deterministic)
+}
+func (m *Node) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Node.Merge(m, src)
+}
+func (m *Node) XXX_Size() int {
+	return xxx_messageInfo_Node.Size(m)
+}
+func (m *Node) XXX_DiscardUnknown() {
+	xxx_messageInfo_Node.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Node proto.InternalMessageInfo
+
+func (m *Node) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Node) GetHost() string {
+	if m != nil {
+		return m.Host
+	}
+	return ""
+}
+
+type Service struct {
+	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Version              string     `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	Node                 *Node      `protobuf:"bytes,3,opt,name=node,proto3" json:"node,omitempty"`
+	Services             []*Service `protobuf:"bytes,4,rep,name=services,proto3" json:"services,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *Service) Reset()         { *m = Service{} }
+func (m *Service) String() string { return proto.CompactTextString(m) }
+func (*Service) ProtoMessage()    {}
+func (*Service) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c33392ef2c1961ba, []int{4}
+}
+
+func (m *Service) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Service.Unmarshal(m, b)
+}
+func (m *Service) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Service.Marshal(b, m, deterministic)
+}
+func (m *Service) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Service.Merge(m, src)
+}
+func (m *Service) XXX_Size() int {
+	return xxx_messageInfo_Service.Size(m)
+}
+func (m *Service) XXX_DiscardUnknown() {
+	xxx_messageInfo_Service.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Service proto.InternalMessageInfo
+
+func (m *Service) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Service) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *Service) GetNode() *Node {
+	if m != nil {
+		return m.Node
+	}
+	return nil
+}
+
+func (m *Service) GetServices() []*Service {
+	if m != nil {
+		return m.Services
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*ReqMessage)(nil), "com.hbchen.ReqMessage")
-	proto.RegisterType((*RspMessage)(nil), "com.hbchen.RspMessage")
-	proto.RegisterType((*RspMessage_Response)(nil), "com.hbchen.RspMessage.Response")
-	proto.RegisterType((*RspMessage_Chain)(nil), "com.hbchen.RspMessage.Chain")
-	proto.RegisterEnum("com.hbchen.Services", Services_name, Services_value)
+	proto.RegisterType((*ApiRequest)(nil), "com.hbchen.ApiRequest")
+	proto.RegisterType((*Request)(nil), "com.hbchen.Request")
+	proto.RegisterType((*Response)(nil), "com.hbchen.Response")
+	proto.RegisterType((*Response_Chain)(nil), "com.hbchen.Response.Chain")
+	proto.RegisterType((*Node)(nil), "com.hbchen.Node")
+	proto.RegisterType((*Service)(nil), "com.hbchen.Service")
+}
+
+func init() { proto.RegisterFile("proto/service.proto", fileDescriptor_c33392ef2c1961ba) }
+
+var fileDescriptor_c33392ef2c1961ba = []byte{
+	// 331 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xcd, 0x4a, 0xc3, 0x40,
+	0x10, 0x36, 0x7f, 0x6e, 0x1d, 0xa1, 0x94, 0x8d, 0x48, 0xc8, 0xa9, 0x04, 0x0f, 0x45, 0x30, 0x95,
+	0xf6, 0x24, 0x78, 0xa9, 0xc5, 0xab, 0x87, 0x78, 0xf3, 0x96, 0x26, 0x83, 0x59, 0x48, 0xb2, 0x31,
+	0x1b, 0x4b, 0xf1, 0xe4, 0x13, 0xf8, 0x60, 0x3e, 0x95, 0xec, 0x76, 0x63, 0x52, 0xd0, 0xd2, 0x9e,
+	0x32, 0x93, 0x99, 0xef, 0x67, 0x66, 0x07, 0xdc, 0xaa, 0xe6, 0x0d, 0x9f, 0x0a, 0xac, 0xd7, 0x2c,
+	0xc1, 0x50, 0x65, 0x14, 0x12, 0x5e, 0x84, 0xd9, 0x2a, 0xc9, 0xb0, 0x0c, 0xee, 0x01, 0x16, 0x15,
+	0x8b, 0xf0, 0xed, 0x1d, 0x45, 0x43, 0x29, 0xd8, 0x65, 0x5c, 0xa0, 0x67, 0x8c, 0x8d, 0xc9, 0x59,
+	0xa4, 0x62, 0xea, 0xc3, 0x40, 0xc3, 0x85, 0x67, 0xaa, 0xff, 0xbf, 0x79, 0x90, 0x01, 0xd9, 0x07,
+	0xf5, 0x80, 0xac, 0xb1, 0x16, 0x8c, 0x97, 0x1a, 0xd9, 0xa6, 0x74, 0xda, 0x23, 0xb5, 0xc6, 0xd6,
+	0xe4, 0x7c, 0xe6, 0x86, 0x9d, 0xab, 0xf0, 0x79, 0x5b, 0xeb, 0x29, 0x7d, 0x1b, 0x30, 0x88, 0x50,
+	0x54, 0xbc, 0x14, 0x48, 0x47, 0x60, 0x15, 0xe2, 0x55, 0x4b, 0xc9, 0x90, 0xde, 0x82, 0x93, 0x64,
+	0x31, 0x93, 0x3a, 0x92, 0xcc, 0xef, 0x93, 0xb5, 0xb0, 0x70, 0x29, 0x3b, 0xa2, 0x6d, 0xa3, 0xff,
+	0x01, 0x8e, 0xca, 0xe9, 0x0d, 0x10, 0xad, 0xa2, 0x08, 0xff, 0x71, 0xd2, 0xf6, 0x48, 0xed, 0xa4,
+	0xd9, 0xe8, 0x79, 0x64, 0xd8, 0x69, 0x5b, 0x07, 0x6a, 0x07, 0xd7, 0x60, 0x3f, 0xf1, 0x14, 0xe9,
+	0x10, 0x4c, 0x96, 0xea, 0x31, 0x4c, 0x96, 0xca, 0x1d, 0x66, 0x5c, 0x34, 0x9a, 0x5c, 0xc5, 0xc1,
+	0x97, 0x01, 0x44, 0x9b, 0x38, 0x72, 0xc7, 0x57, 0x60, 0x97, 0x3c, 0x45, 0xcf, 0x52, 0x53, 0x8d,
+	0xfa, 0xb6, 0xa4, 0x7a, 0xa4, 0xaa, 0x3b, 0x2f, 0x61, 0x1f, 0xf0, 0x12, 0xb3, 0x4f, 0x03, 0x86,
+	0x8f, 0x9b, 0xb8, 0xa8, 0x72, 0x6c, 0x7d, 0xdd, 0x01, 0x59, 0x54, 0x6c, 0x19, 0xe7, 0x39, 0xbd,
+	0xec, 0x83, 0xbb, 0xcb, 0xf2, 0x2f, 0xfe, 0xda, 0x4a, 0x70, 0x42, 0xe7, 0x60, 0x2b, 0x9c, 0xbb,
+	0x5b, 0xdf, 0x0b, 0x7a, 0x20, 0x2f, 0x8e, 0xba, 0xe4, 0xd5, 0xa9, 0xfa, 0xcc, 0x7f, 0x02, 0x00,
+	0x00, 0xff, 0xff, 0xa2, 0x85, 0x68, 0x2b, 0xe7, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -237,7 +386,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ExampleServiceClient interface {
-	Call(ctx context.Context, in *ReqMessage, opts ...grpc.CallOption) (*RspMessage, error)
+	ApiCall(ctx context.Context, in *ApiRequest, opts ...grpc.CallOption) (*Response, error)
+	Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 }
 
 type exampleServiceClient struct {
@@ -248,8 +398,17 @@ func NewExampleServiceClient(cc *grpc.ClientConn) ExampleServiceClient {
 	return &exampleServiceClient{cc}
 }
 
-func (c *exampleServiceClient) Call(ctx context.Context, in *ReqMessage, opts ...grpc.CallOption) (*RspMessage, error) {
-	out := new(RspMessage)
+func (c *exampleServiceClient) ApiCall(ctx context.Context, in *ApiRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/com.hbchen.ExampleService/ApiCall", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *exampleServiceClient) Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/com.hbchen.ExampleService/Call", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -259,15 +418,45 @@ func (c *exampleServiceClient) Call(ctx context.Context, in *ReqMessage, opts ..
 
 // ExampleServiceServer is the server API for ExampleService service.
 type ExampleServiceServer interface {
-	Call(context.Context, *ReqMessage) (*RspMessage, error)
+	ApiCall(context.Context, *ApiRequest) (*Response, error)
+	Call(context.Context, *Request) (*Response, error)
+}
+
+// UnimplementedExampleServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedExampleServiceServer struct {
+}
+
+func (*UnimplementedExampleServiceServer) ApiCall(ctx context.Context, req *ApiRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiCall not implemented")
+}
+func (*UnimplementedExampleServiceServer) Call(ctx context.Context, req *Request) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
 }
 
 func RegisterExampleServiceServer(s *grpc.Server, srv ExampleServiceServer) {
 	s.RegisterService(&_ExampleService_serviceDesc, srv)
 }
 
+func _ExampleService_ApiCall_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExampleServiceServer).ApiCall(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/com.hbchen.ExampleService/ApiCall",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExampleServiceServer).ApiCall(ctx, req.(*ApiRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ExampleService_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqMessage)
+	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -279,7 +468,7 @@ func _ExampleService_Call_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/com.hbchen.ExampleService/Call",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExampleServiceServer).Call(ctx, req.(*ReqMessage))
+		return srv.(ExampleServiceServer).Call(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -289,34 +478,14 @@ var _ExampleService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ExampleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "ApiCall",
+			Handler:    _ExampleService_ApiCall_Handler,
+		},
+		{
 			MethodName: "Call",
 			Handler:    _ExampleService_Call_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/service.proto",
-}
-
-func init() { proto.RegisterFile("proto/service.proto", fileDescriptor_service_e90d706a5e39d8ba) }
-
-var fileDescriptor_service_e90d706a5e39d8ba = []byte{
-	// 278 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0x4f, 0x4b, 0xc3, 0x40,
-	0x10, 0xc5, 0x9b, 0xb6, 0xd1, 0x74, 0x22, 0x25, 0x8c, 0x52, 0x42, 0x10, 0x8d, 0x39, 0x05, 0x0f,
-	0x11, 0xe3, 0x45, 0xd0, 0x93, 0xc5, 0x4b, 0x41, 0x0f, 0xeb, 0xcd, 0x4b, 0xd8, 0x2e, 0x83, 0x09,
-	0x64, 0x93, 0x35, 0x5b, 0x4a, 0xbf, 0xab, 0x5f, 0x46, 0xba, 0x49, 0xff, 0x08, 0xf1, 0xb4, 0xb3,
-	0x8f, 0xdf, 0x3c, 0x66, 0xde, 0xc0, 0xb9, 0x6a, 0xea, 0x55, 0x7d, 0xa7, 0xa9, 0x59, 0x17, 0x82,
-	0x12, 0xf3, 0x43, 0x10, 0xb5, 0x4c, 0xf2, 0xa5, 0xc8, 0xa9, 0x8a, 0x42, 0x00, 0x46, 0xdf, 0x6f,
-	0xa4, 0x35, 0xff, 0x22, 0x44, 0x18, 0x57, 0x5c, 0x92, 0x6f, 0x85, 0x56, 0x3c, 0x61, 0xa6, 0x8e,
-	0x7e, 0x2c, 0x00, 0xa6, 0xd5, 0x0e, 0x79, 0x02, 0xa7, 0x21, 0xad, 0xea, 0x4a, 0x93, 0x3f, 0x0c,
-	0xad, 0xd8, 0x4d, 0xaf, 0x93, 0x83, 0x5f, 0x72, 0x20, 0x13, 0xd6, 0x61, 0x6c, 0xdf, 0x80, 0x29,
-	0xd8, 0x22, 0xe7, 0x45, 0xe5, 0x8f, 0xc2, 0x51, 0xec, 0xa6, 0x97, 0xff, 0x74, 0xce, 0xb7, 0x0c,
-	0x6b, 0xd1, 0xe0, 0x0a, 0x9c, 0x9d, 0x53, 0xdf, 0x7c, 0xc1, 0x33, 0xd8, 0x86, 0xc7, 0x1b, 0x38,
-	0xeb, 0xf6, 0xcc, 0x8e, 0x20, 0xb7, 0xd3, 0xde, 0xb9, 0x24, 0xf4, 0x60, 0x24, 0x56, 0x1b, 0x33,
-	0xf7, 0x84, 0x6d, 0xcb, 0xdb, 0x05, 0x38, 0x1f, 0x2d, 0xa0, 0x11, 0x61, 0x2a, 0x65, 0x46, 0x1b,
-	0x2e, 0x55, 0x49, 0x19, 0x57, 0x85, 0x37, 0xc0, 0x0b, 0xf0, 0x8e, 0x34, 0xdd, 0xac, 0xb3, 0x7b,
-	0xcf, 0xea, 0x51, 0x53, 0x6f, 0x98, 0x2e, 0x60, 0xfa, 0xda, 0x4a, 0x9d, 0x25, 0x3e, 0xc2, 0x78,
-	0xce, 0xcb, 0x12, 0x67, 0x7f, 0x16, 0xdd, 0xe7, 0x1d, 0xcc, 0xfa, 0x03, 0x88, 0x06, 0x2f, 0xa7,
-	0x9f, 0xb6, 0x39, 0xd6, 0xf2, 0xc4, 0x3c, 0x0f, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x8b, 0x0e,
-	0x8e, 0x71, 0xca, 0x01, 0x00, 0x00,
 }

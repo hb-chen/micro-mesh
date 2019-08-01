@@ -10,7 +10,7 @@
 		{
 			"name": "/v1/example/call",
 			"request": {
-				"url": "http://{{HOST}}{{PORT}}/v1/example/call/Hobo",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/Hobo?services=[{\"name\":\"ExampleService\",\"version\":\"latest\",\"services\":[]}]",
 				"method": "GET",
 				"header": [
 					{
@@ -21,11 +21,6 @@
 					{
 						"key": "x-custom-token",
 						"value": "{{X_CUSTOM_TOKEN}}",
-						"description": ""
-					},
-					{
-						"key": "Grpc-Metadata-x-tier",
-						"value": "{{X_TIER}}",
 						"description": ""
 					}
 				],
@@ -40,7 +35,7 @@
 		{
 			"name": "/v1/example/call/responsebody",
 			"request": {
-				"url": "http://{{HOST}}/v1/example/call/responsebody/Hobo",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/responsebody/Hobo?services=[{\"name\":\"ExampleService\",\"version\":\"latest\",\"services\":[]}]",
 				"method": "GET",
 				"header": [
 					{
@@ -51,11 +46,6 @@
 					{
 						"key": "x-custom-token",
 						"value": "{{X_CUSTOM_TOKEN}}",
-						"description": ""
-					},
-					{
-						"key": "Grpc-Metadata-x-tier",
-						"value": "{{X_TIER}}",
 						"description": ""
 					}
 				],
@@ -70,7 +60,7 @@
 		{
 			"name": "/v1/example/call",
 			"request": {
-				"url": "http://{{HOST}}/v1/example/call",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call",
 				"method": "POST",
 				"header": [
 					{
@@ -84,14 +74,14 @@
 						"description": ""
 					},
 					{
-						"key": "Grpc-Metadata-x-tier",
-						"value": "{{X_TIER}}",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\":\"Hobo\"}"
+					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    },\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n\n      ]\n    }\n  ]\n}"
 				},
 				"description": ""
 			},
@@ -100,7 +90,7 @@
 		{
 			"name": "/v1/example/call/responsebody",
 			"request": {
-				"url": "http://{{HOST}}/v1/example/call/responsebody",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/responsebody",
 				"method": "POST",
 				"header": [
 					{
@@ -121,7 +111,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\":\"Hobo\"}"
+					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    },\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n\n      ]\n    }\n  ]\n}"
 				},
 				"description": ""
 			},

@@ -3,15 +3,15 @@ config_version: 3
 
 http:
   rules:
-  - selector: com.hbchen.ExampleService.Call
+  - selector: com.hbchen.ExampleService.ApiCall
     get: /v1/example/call/{name}
-  - selector: com.hbchen.ExampleService.Call
+  - selector: com.hbchen.ExampleService.ApiCall
     get: /v1/example/call/responsebody/{name}
-    response_body: "response"
+    response_body: "msg"
   - selector: com.hbchen.ExampleService.Call
     post: /v1/example/call
     body: "*"
   - selector: com.hbchen.ExampleService.Call
     post: /v1/example/call/responsebody
     body: "*"
-    response_body: "response"
+    response_body: "msg"

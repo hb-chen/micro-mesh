@@ -17,12 +17,12 @@
   "paths": {
     "/v1/example/call": {
       "post": {
-        "operationId": "Call3",
+        "operationId": "Call",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/hbchenRspMessage"
+              "$ref": "#/definitions/hbchenResponse"
             }
           }
         },
@@ -32,7 +32,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/hbchenReqMessage"
+              "$ref": "#/definitions/hbchenRequest"
             }
           }
         ],
@@ -43,12 +43,12 @@
     },
     "/v1/example/call/responsebody": {
       "post": {
-        "operationId": "Call4",
+        "operationId": "Call2",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/RspMessageResponse"
+              "type": "string"
             }
           }
         },
@@ -58,7 +58,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/hbchenReqMessage"
+              "$ref": "#/definitions/hbchenRequest"
             }
           }
         ],
@@ -69,12 +69,12 @@
     },
     "/v1/example/call/responsebody/{name}": {
       "get": {
-        "operationId": "Call2",
+        "operationId": "ApiCall2",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/RspMessageResponse"
+              "type": "string"
             }
           }
         },
@@ -83,6 +83,12 @@
             "name": "name",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "services",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -93,12 +99,12 @@
     },
     "/v1/example/call/{name}": {
       "get": {
-        "operationId": "Call",
+        "operationId": "ApiCall",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/hbchenRspMessage"
+              "$ref": "#/definitions/hbchenResponse"
             }
           }
         },
@@ -107,6 +113,12 @@
             "name": "name",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "services",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -117,32 +129,81 @@
     }
   },
   "definitions": {
-    "RspMessageResponse": {
+    "ResponseChain": {
       "type": "object",
       "properties": {
-        "name": {
+        "service": {
+          "$ref": "#/definitions/hbchenService"
+        },
+        "ctx": {
           "type": "string"
-        }
-      }
-    },
-    "hbchenReqMessage": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "hbchenRspMessage": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/RspMessageResponse"
         },
         "chain": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/ResponseChain"
+          }
+        }
+      }
+    },
+    "hbchenNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        }
+      }
+    },
+    "hbchenRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hbchenService"
+          }
+        }
+      }
+    },
+    "hbchenResponse": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        },
+        "chain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResponseChain"
+          }
+        }
+      }
+    },
+    "hbchenService": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "node": {
+          "$ref": "#/definitions/hbchenNode"
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hbchenService"
           }
         }
       }

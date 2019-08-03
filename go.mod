@@ -8,9 +8,10 @@ exclude (
 require (
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/grpc-ecosystem/grpc-gateway v1.9.2
+	github.com/grpc-ecosystem/grpc-gateway v1.9.5
 	github.com/hb-go/grpc-contrib v0.0.0-20190731054334-689f0a531cef
 	github.com/hb-go/pkg v0.0.1
+	github.com/micro/go-plugins v1.2.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	google.golang.org/grpc v1.22.1
 )

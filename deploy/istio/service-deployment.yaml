@@ -1,41 +1,79 @@
 ##################################################################################################
-# SRV service
+# SRV_1 service
 ##################################################################################################
 apiVersion: v1
 kind: Service
 metadata:
-  name: mm-example-srv
+  name: mm-example-srv-1
   labels:
-    app: mm-example-srv
+    app: mm-example-srv-1
 spec:
   ports:
   - port: 9080
     name: grpc
   selector:
-    app: mm-example-srv
+    app: mm-example-srv-1
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mm-example-srv-v1
+  name: mm-example-srv-1-v1
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: mm-example-srv
+        app: mm-example-srv-1
         version: v1
     spec:
-      serviceAccountName: micro-services
       containers:
-      - name: mm-example-srv
+      - name: mm-example-srv-1
         command: [
           "/main",
           "-serve_addr=:9080",
-          "-service_name=ExampleService",
-          "-service_version=latest"
+          "-remote_addr=:9080"
         ]
-        image: hbchen/micro-mesh-example-srv:v0.0.4_k8s
+        image: hbchen/micro-mesh-example-srv-1:v0.0.3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---
+##################################################################################################
+# SRV_2 service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: mm-example-srv-2
+  labels:
+    app: mm-example-srv-2
+spec:
+  ports:
+  - port: 9080
+    name: grpc
+  selector:
+    app: mm-example-srv-2
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mm-example-srv-2-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mm-example-srv-2
+        version: v1
+    spec:
+      containers:
+      - name: mm-example-srv-2
+        command: [
+          "/main",
+          "-serve_addr=:9080",
+          "-remote_addr=:9080"
+        ]
+        image: hbchen/micro-mesh-example-srv-2:v0.0.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -51,13 +89,10 @@ metadata:
     app: mm-example-api
 spec:
   ports:
-  - name: http
-    port: 80
-    targetPort: 9080
-    nodePort: 30001
+  - port: 9080
+    name: http
   selector:
     app: mm-example-api
-  type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -71,14 +106,14 @@ spec:
         app: mm-example-api
         version: v1
     spec:
-      serviceAccountName: micro-services
       containers:
       - name: mm-example-api
         command: [
           "/main",
-          "-serve_addr=:9080"
+          "-serve_addr=:9080",
+          "-remote_addr=:9080"
         ]
-        image: hbchen/micro-mesh-example-api:v0.0.4_k8s
+        image: hbchen/micro-mesh-example-api:v0.0.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

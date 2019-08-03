@@ -64,12 +64,24 @@ $ curl -X POST -d '{"name":"hobo","services":[{"name":"ExampleService","version"
 - `HOST`、`PORT`、`AUTH_TOKEN`、`X_CUSTOM_TOKEN`环境变量修改
     - AUTH_TOKEN:`curl https://raw.githubusercontent.com/istio/istio/release-1.1/security/tools/jwt/samples/demo.jwt -s`
 
-## Istio
+## 部署
+
+## 打包
+```bash
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' ./main.go
+
+docker build -t hbchen/micro-mesh-example-api:v0.0.4_k8s .
+docker build -t hbchen/micro-mesh-example-srv:v0.0.4_k8s .
+
+```
+### K8S
+
+### Istio
 
 ### 验证
 
 **Header说明**
-- `"Authorization: Bearer $TOKEN"`使用[JWT](/deploy/k8s/jwt/gateway-jwt.yaml)需要
+- `"Authorization: Bearer $TOKEN"`使用[JWT](/deploy/istio/jwt/gateway-jwt.yaml)需要
 - `"x-custom-token: abc"`使用[自定义Auth adapter](/examples/adapter/auth)需要
 
 ```bash
@@ -78,3 +90,4 @@ $ TOKEN=$(curl https://raw.githubusercontent.com/istio/istio/release-1.1/securit
 
 $ curl -H "Authorization: Bearer $TOKEN" ……
 ```
+

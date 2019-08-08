@@ -12,7 +12,7 @@ spec:
   - port: 9080
     name: grpc
   selector:
-    app: mm-example-srv-1
+    app: com.hbchen.ExampleService1
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -20,10 +20,13 @@ metadata:
   name: mm-example-srv-1-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: com.hbchen.ExampleService1
   template:
     metadata:
       labels:
-        app: mm-example-srv-1
+        app: com.hbchen.ExampleService1
         version: v1
     spec:
       containers:
@@ -53,7 +56,7 @@ spec:
   - port: 9080
     name: grpc
   selector:
-    app: mm-example-srv-2
+    app: com.hbchen.ExampleService2
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -61,10 +64,13 @@ metadata:
   name: mm-example-srv-2-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: com.hbchen.ExampleService2
   template:
     metadata:
       labels:
-        app: mm-example-srv-2
+        app: com.hbchen.ExampleService2
         version: v1
     spec:
       containers:
@@ -94,7 +100,7 @@ spec:
   - port: 9080
     name: http
   selector:
-    app: mm-example-api
+    app: com.hbchen.api
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -102,10 +108,13 @@ metadata:
   name: mm-example-api-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: com.hbchen.api
   template:
     metadata:
       labels:
-        app: mm-example-api
+        app: com.hbchen.api
         version: v1
     spec:
       containers:

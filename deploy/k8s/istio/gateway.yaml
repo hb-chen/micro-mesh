@@ -21,7 +21,7 @@ spec:
   hosts:
   - "hbchen.com"
   gateways:
-  - mm-example-gateway
+  - mm-example-gateway # gateway name
   http:
   - match:
     - uri:

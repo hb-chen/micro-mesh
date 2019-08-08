@@ -4,7 +4,7 @@ metadata:
   name: mm-example-api-jwt
 spec:
   targets:
-  - name: mm-example-api
+  - name: com-hbchen-api  # service name
   origins:
   - jwt:
       issuer: "testing@secure.istio.io"

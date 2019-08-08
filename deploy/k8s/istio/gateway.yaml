@@ -11,15 +11,15 @@ spec:
       name: http
       protocol: http
     hosts:
-    - "*"
+    - "hbchen.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: mm-example
+  name: mm-example-api
 spec:
   hosts:
-  - "*"
+  - "hbchen.com"
   gateways:
   - mm-example-gateway
   http:
@@ -28,6 +28,7 @@ spec:
         prefix: /v1/example
     route:
     - destination:
-        host: mm-example-api
+        host: com-hbchen-api.default.svc.cluster.local
+        subset: v1
         port:
           number: 9080

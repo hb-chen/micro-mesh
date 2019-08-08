@@ -8,10 +8,10 @@
 ### 运行
 ```bash
 # api
-$ go run main.go -serve_addr :9080 -services '[{"name":"ExampleService","version":"latest","services":[]}]'
+$ go run -tags "dev" main.go -serve_addr :9080 -services '[{"name":"ExampleService","version":"latest","services":[]}]'
  
 # srv
-go run main.go -service_name ExampleService service_version latest
+$ go run -tags "dev" main.go -service_name ExampleService service_version latest
 ```
 
 ### `srv`服务调用
@@ -66,9 +66,12 @@ $ curl -X POST -d '{"name":"hobo","services":[{"name":"ExampleService","version"
 
 ## 部署
 
-## 打包
+### 打包
 ```bash
-CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' ./main.go
+# k8s
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -tags "k8s" ./main.go
+# istio
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -tags "istio" ./main.go
 
 docker build -t hbchen/micro-mesh-example-api:v0.0.4_k8s .
 docker build -t hbchen/micro-mesh-example-srv:v0.0.4_k8s .
@@ -81,7 +84,7 @@ docker build -t hbchen/micro-mesh-example-srv:v0.0.4_k8s .
 ### 验证
 
 **Header说明**
-- `"Authorization: Bearer $TOKEN"`使用[JWT](/deploy/istio/jwt/gateway-jwt.yaml)需要
+- `"Authorization: Bearer $TOKEN"`使用[JWT](/deploy/k8s/istio/jwt/gateway-jwt.yaml)需要
 - `"x-custom-token: abc"`使用[自定义Auth adapter](/examples/adapter/auth)需要
 
 ```bash

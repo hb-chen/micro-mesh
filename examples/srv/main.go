@@ -11,13 +11,12 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/hb-go/grpc-contrib/registry"
-	_ "github.com/hb-go/grpc-contrib/registry/micro"
-	"github.com/hb-go/micro-mesh/examples/service"
+	"github.com/hb-go/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/hb-go/pkg/log"
-
+	"github.com/hb-go/micro-mesh/examples/common"
+	"github.com/hb-go/micro-mesh/examples/service"
 	pb "github.com/hb-go/micro-mesh/proto"
 )
 
@@ -36,6 +35,13 @@ func init() {
 	flag.Parse()
 }
 
+func init() {
+	// logger
+	if err := common.Logger("example-srv"); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	if cmdHelp {
 		flag.PrintDefaults()
@@ -47,11 +53,13 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	log.Infof("registry %v",registry.DefaultRegistry)
+
 	// 服务注册
 	if len(serviceName) > 0 {
 		sd := pb.ServiceDescExampleService()
 		sd.ServiceName = service.ServicePrefix + serviceName
-		if err := registry.Register(sd, registry.WithVersion(serviceVersion), registry.WithAddr(lis.Addr().String())); err != nil {
+		if err := registry.Register(&sd, registry.WithVersion(serviceVersion), registry.WithAddr(lis.Addr().String())); err != nil {
 			log.Fatal(err)
 		}
 	} else if err := pb.RegisterExampleService(registry.WithVersion(serviceVersion), registry.WithAddr(lis.Addr().String())); err != nil {
@@ -60,7 +68,7 @@ func main() {
 
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
-			grpc_recovery.UnaryServerInterceptor(),
+			common.ServerInterceptors()...
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(),

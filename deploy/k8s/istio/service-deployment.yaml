@@ -4,9 +4,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mm-example-srv-1
+  name: com-hbchen-exampleservice1
   labels:
-    app: mm-example-srv-1
+    app: com.hbchen.ExampleService1
 spec:
   ports:
   - port: 9080
@@ -31,9 +31,10 @@ spec:
         command: [
           "/main",
           "-serve_addr=:9080",
-          "-remote_addr=:9080"
+          "-service_name=ExampleService1",
+          "-service_version=v1"
         ]
-        image: hbchen/micro-mesh-example-srv-1:v0.0.3
+          image: hbchen/micro-mesh-example-srv:v0.0.4_istio
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -44,9 +45,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mm-example-srv-2
+  name: com-hbchen-exampleservice2
   labels:
-    app: mm-example-srv-2
+    app: com.hbchen.ExampleService2
 spec:
   ports:
   - port: 9080
@@ -71,9 +72,10 @@ spec:
         command: [
           "/main",
           "-serve_addr=:9080",
-          "-remote_addr=:9080"
+          "-service_name=ExampleService2",
+          "-service_version=v1"
         ]
-        image: hbchen/micro-mesh-example-srv-2:v0.0.3
+        image: hbchen/micro-mesh-example-srv:v0.0.4_istio
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -84,9 +86,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mm-example-api
+  name: com-hbchen-api
   labels:
-    app: mm-example-api
+    app: com.hbchen.api
 spec:
   ports:
   - port: 9080
@@ -111,9 +113,9 @@ spec:
         command: [
           "/main",
           "-serve_addr=:9080",
-          "-remote_addr=:9080"
+          "-services=[{\"name\":\"ExampleService1\",\"version\":\"v1\",\"services\":[{\"name\":\"ExampleService2\",\"version\":\"v1\",\"services\":[]}]}]"
         ]
-        image: hbchen/micro-mesh-example-api:v0.0.3
+        image: hbchen/micro-mesh-example-api:v0.0.4_istio
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

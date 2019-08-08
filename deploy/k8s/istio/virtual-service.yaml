@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm-example-srv-1
+spec:
+  hosts:
+  - com-hbchen-exampleservice1
+  http:
+  - route:
+    - destination:
+        host: com-hbchen-exampleservice1.default.svc.cluster.local
+        subset: v1
+        port:
+          number: 9080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mm-example-srv-2
+spec:
+  hosts:
+  - com-hbchen-exampleservice2
+  http:
+  - route:
+    - destination:
+        host: com-hbchen-exampleservice2.default.svc.cluster.local
+        subset: v1
+        port:
+          number: 9080

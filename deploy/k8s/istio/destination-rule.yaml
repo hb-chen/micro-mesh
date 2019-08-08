@@ -3,7 +3,10 @@ kind: DestinationRule
 metadata:
   name: mm-example-api
 spec:
-  host: mm-example-api
+  host: com-hbchen-api.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
   subsets:
   - name: v1
     labels:
@@ -14,7 +17,10 @@ kind: DestinationRule
 metadata:
   name: mm-example-srv-1
 spec:
-  host: mm-example-srv-1
+  host: com-hbchen-exampleservice1.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
   subsets:
   - name: v1
     labels:
@@ -25,7 +31,10 @@ kind: DestinationRule
 metadata:
   name: mm-example-srv-2
 spec:
-  host: mm-example-srv-2
+  host: com-hbchen-exampleservice2.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
   subsets:
   - name: v1
     labels:

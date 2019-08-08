@@ -9,13 +9,11 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/hb-go/grpc-contrib/client"
 	"github.com/hb-go/grpc-contrib/registry"
-	_ "github.com/hb-go/grpc-contrib/registry/micro"
 	pb "github.com/hb-go/micro-mesh/proto"
 	"github.com/hb-go/pkg/dispatcher"
 	"github.com/hb-go/pkg/log"
 	gopool "github.com/hb-go/pkg/pool"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/balancer/roundrobin"
 )
 
 var (
@@ -88,7 +86,7 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 		chain.Ctx = string(incoming)
 	}
 
-	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name), grpc.WithBlock()}
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
 
 	gp := gopool.NewGoroutinePool(len(in.Services), false)
 	gp.AddWorkers(2) // worker num=3
@@ -97,19 +95,31 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 	wg := sync.WaitGroup{}
 	h := func(req *pb.Request) error {
 		defer wg.Done()
+		defer func() {
+			if r := recover(); r != nil {
+				log.Errorf("service: %v handle failed with error: %v", req.Name, r)
+			}
+		}()
 
 		sd := pb.ServiceDescExampleService()
-		sd.ServiceName = ServicePrefix + req.Name
-		addr := registry.NewTarget(sd, registry.WithVersion(req.Version))
+		serviceName := ServicePrefix + req.Name
+		sd.ServiceName = serviceName
+		addr := registry.NewTarget(&sd, registry.WithAddr(":9080"), registry.WithVersion(req.Version))
 		log.Debugf("addr: %v", addr)
 
 		cc1, err := pool.Get(addr, opts...)
 		if err != nil {
+			log.Errorf("conn pool error: %v", err)
 			return err
 		}
 
 		rsp1, err := pb.NewExampleServiceClient(cc1.GetCC()).Call(ctx, req)
-		log.Debugf("service: %v dispatch done, sub services: %v", req.Name, req.Services)
+		if err != nil {
+			log.Errorf("example service client call error: %v", err)
+			return err
+		} else {
+			log.Debugf("service: %v dispatch done, sub services: %v", req.Name, req.Services)
+		}
 
 		mu.Lock()
 		chain.Chain = append(chain.Chain, rsp1.Chain...)

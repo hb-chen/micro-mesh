@@ -9,13 +9,13 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	_ "github.com/hb-go/grpc-contrib/registry/micro"
-	"github.com/hb-go/micro-mesh/examples/service"
+	"github.com/hb-go/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 
+	"github.com/hb-go/micro-mesh/examples/common"
+	"github.com/hb-go/micro-mesh/examples/service"
 	pb "github.com/hb-go/micro-mesh/proto"
-	"github.com/hb-go/pkg/log"
 )
 
 var (
@@ -31,6 +31,13 @@ func init() {
 	flag.Parse()
 }
 
+func init() {
+	// logger
+	if err := common.Logger("example-api"); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	if cmdHelp {
 		flag.PrintDefaults()
@@ -39,7 +46,7 @@ func main() {
 
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
-			grpc_recovery.UnaryServerInterceptor(),
+			common.ServerInterceptors()...
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(),
@@ -66,6 +73,10 @@ func main() {
 			grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
 				return bcLis.Dial()
 			}),
+			grpc.WithDefaultCallOptions(),
+			grpc.WithChainUnaryInterceptor(
+				common.ClientInterceptors()...
+			),
 			grpc.WithInsecure(),
 		},
 	)

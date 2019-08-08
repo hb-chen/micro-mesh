@@ -31,8 +31,8 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 // Export service desc
 
 // ExampleService desc
-func ServiceDescExampleService() *grpc.ServiceDesc {
-	return &_ExampleService_serviceDesc
+func ServiceDescExampleService() grpc.ServiceDesc {
+	return _ExampleService_serviceDesc
 }
 
 // gRPC Registry

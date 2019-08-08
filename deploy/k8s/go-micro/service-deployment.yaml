@@ -1,29 +1,16 @@
 ##################################################################################################
-# SRV service
+# SRV-1 service
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: mm-example-srv
-  labels:
-    app: mm-example-srv
-spec:
-  ports:
-  - port: 9080
-    name: grpc
-  selector:
-    app: mm-example-srv
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mm-example-srv-v1
+  name: mm-example-srv-1-v1
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: mm-example-srv
+        app: com.hbchen.ExampleService1
         version: v1
     spec:
       serviceAccountName: micro-services
@@ -32,7 +19,36 @@ spec:
         command: [
           "/main",
           "-serve_addr=:9080",
-          "-service_name=ExampleService",
+          "-service_name=ExampleService1",
+          "-service_version=latest"
+        ]
+        image: hbchen/micro-mesh-example-srv:v0.0.4_k8s
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---
+##################################################################################################
+# SRV-2 service
+##################################################################################################
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mm-example-srv-2-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.hbchen.ExampleService2
+        version: v1
+    spec:
+      serviceAccountName: micro-services
+      containers:
+      - name: mm-example-srv
+        command: [
+          "/main",
+          "-serve_addr=:9080",
+          "-service_name=ExampleService2",
           "-service_version=latest"
         ]
         image: hbchen/micro-mesh-example-srv:v0.0.4_k8s
@@ -76,7 +92,8 @@ spec:
       - name: mm-example-api
         command: [
           "/main",
-          "-serve_addr=:9080"
+          "-serve_addr=:9080",
+          "-services=[{\"name\":\"ExampleService1\",\"version\":\"latest\",\"services\":[{\"name\":\"ExampleService2\",\"version\":\"latest\",\"services\":[]}]}]"
         ]
         image: hbchen/micro-mesh-example-api:v0.0.4_k8s
         imagePullPolicy: IfNotPresent

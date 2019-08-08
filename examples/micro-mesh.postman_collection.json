@@ -10,7 +10,7 @@
 		{
 			"name": "/v1/example/call",
 			"request": {
-				"url": "http://{{HOST}}{{PORT}}/v1/example/call/Hobo?services=[{\"name\":\"ExampleService\",\"version\":\"latest\",\"services\":[]}]",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/Hobo?services=[{\"name\":\"ExampleService1\",\"version\":\"latest\",\"services\":[{\"name\":\"ExampleService2\",\"version\":\"latest\",\"services\":[]}]}]",
 				"method": "GET",
 				"header": [
 					{
@@ -35,7 +35,7 @@
 		{
 			"name": "/v1/example/call/responsebody",
 			"request": {
-				"url": "http://{{HOST}}{{PORT}}/v1/example/call/responsebody/Hobo?services=[{\"name\":\"ExampleService\",\"version\":\"latest\",\"services\":[]}]",
+				"url": "http://{{HOST}}{{PORT}}/v1/example/call/responsebody/Hobo?services=[{\"name\":\"ExampleService1\",\"version\":\"latest\",\"services\":[{\"name\":\"ExampleService2\",\"version\":\"latest\",\"services\":[]}]}]",
 				"method": "GET",
 				"header": [
 					{
@@ -81,7 +81,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    },\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n\n      ]\n    }\n  ]\n}"
+					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService1\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService2\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    }\n  ]\n}"
 				},
 				"description": ""
 			},
@@ -111,7 +111,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    },\n    {\n      \"name\" : \"ExampleService\",\n      \"version\" : \"latest\",\n      \"services\" : [\n\n      ]\n    }\n  ]\n}"
+					"raw": "{\n  \"name\" : \"hobo\",\n  \"services\" : [\n    {\n      \"name\" : \"ExampleService1\",\n      \"version\" : \"latest\",\n      \"services\" : [\n        {\n          \"name\" : \"ExampleService2\",\n          \"version\" : \"latest\",\n          \"services\" : [\n\n          ]\n        }\n      ]\n    }\n  ]\n}"
 				},
 				"description": ""
 			},

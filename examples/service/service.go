@@ -9,11 +9,13 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/hb-go/grpc-contrib/client"
 	"github.com/hb-go/grpc-contrib/registry"
-	pb "github.com/hb-go/micro-mesh/proto"
 	"github.com/hb-go/pkg/dispatcher"
 	"github.com/hb-go/pkg/log"
 	gopool "github.com/hb-go/pkg/pool"
 	"google.golang.org/grpc"
+
+	"github.com/hb-go/micro-mesh/examples/common"
+	pb "github.com/hb-go/micro-mesh/proto"
 )
 
 var (
@@ -86,7 +88,12 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 		chain.Ctx = string(incoming)
 	}
 
-	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
+	opts := []grpc.DialOption{
+		grpc.WithChainUnaryInterceptor(common.ClientInterceptors()...),
+		grpc.WithInsecure(),
+		grpc.WithBalancerName("round_robin"),
+		grpc.WithBlock(),
+	}
 
 	gp := gopool.NewGoroutinePool(len(in.Services), false)
 	gp.AddWorkers(2) // worker num=3

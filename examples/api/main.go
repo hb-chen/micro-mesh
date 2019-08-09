@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/hb-go/grpc-contrib/metadata"
 	"github.com/hb-go/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
@@ -26,7 +27,7 @@ var (
 
 func init() {
 	flag.StringVar(&serveAddr, "serve_addr", ":9080", "serve address.")
-	flag.StringVar(&services, "services", `[{"name":"ExampleService","version":"latest","services":[]}]`, "remote address.")
+	flag.StringVar(&services, "services", `[{"name":"ExampleService1","version":"latest","services":[{"name":"ExampleService2","version":"latest","services":[]}]}]`, "remote address.")
 	flag.BoolVar(&cmdHelp, "h", false, "help")
 	flag.Parse()
 }
@@ -46,7 +47,7 @@ func main() {
 
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
-			common.ServerInterceptors()...
+			common.ServerInterceptors()...,
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(),
@@ -64,7 +65,16 @@ func main() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(
+		// istio trace header
+		runtime.WithMetadata(metadata.GatewayMetadataAnnotator(
+			metadata.WithHeader("x-b3-traceid"),
+			metadata.WithHeader("x-b3-spanid"),
+			metadata.WithHeader("x-b3-parentspanid"),
+			metadata.WithHeader("x-b3-sampled"),
+			metadata.WithHeader("x-b3-flags"),
+		)),
+	)
 	err := pb.RegisterExampleServiceHandlerFromEndpoint(
 		ctx,
 		mux,
@@ -75,7 +85,7 @@ func main() {
 			}),
 			grpc.WithDefaultCallOptions(),
 			grpc.WithChainUnaryInterceptor(
-				common.ClientInterceptors()...
+				common.ClientInterceptors()...,
 			),
 			grpc.WithInsecure(),
 		},

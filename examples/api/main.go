@@ -68,11 +68,7 @@ func main() {
 	mux := runtime.NewServeMux(
 		// istio trace header
 		runtime.WithMetadata(metadata.GatewayMetadataAnnotator(
-			metadata.WithHeader("x-b3-traceid"),
-			metadata.WithHeader("x-b3-spanid"),
-			metadata.WithHeader("x-b3-parentspanid"),
-			metadata.WithHeader("x-b3-sampled"),
-			metadata.WithHeader("x-b3-flags"),
+			common.GatewayMetadataOptions()...,
 		)),
 	)
 	err := pb.RegisterExampleServiceHandlerFromEndpoint(

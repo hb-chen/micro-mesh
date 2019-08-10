@@ -12,7 +12,25 @@ import (
 	"google.golang.org/grpc"
 )
 
+var (
+	metadataOptions = []metadata.Option{
+		// https://istio.io/faq/distributed-tracing/#how-to-support-tracing
+		metadata.WithHeader("x-request-id"),
+		metadata.WithHeader("x-b3-traceid"),
+		metadata.WithHeader("x-b3-spanid"),
+		metadata.WithHeader("x-b3-parentspanid"),
+		metadata.WithHeader("x-b3-sampled"),
+		metadata.WithHeader("x-b3-flags"),
+		metadata.WithHeader("b3"),
+		metadata.WithHeader("x-ot-span-context"),
+	}
+)
+
 func init() {
+}
+
+func gatewayMetadataOptions() []metadata.Option {
+	return metadataOptions
 }
 
 func clientInterceptors() []grpc.UnaryClientInterceptor {
@@ -25,13 +43,7 @@ func clientInterceptors() []grpc.UnaryClientInterceptor {
 	))
 
 	// metadata
-	interceptors = append(interceptors, metadata.UnaryClientInterceptor(
-		metadata.WithHeader("x-b3-traceid"),
-		metadata.WithHeader("x-b3-spanid"),
-		metadata.WithHeader("x-b3-parentspanid"),
-		metadata.WithHeader("x-b3-sampled"),
-		metadata.WithHeader("x-b3-flags"),
-	))
+	interceptors = append(interceptors, metadata.UnaryClientInterceptor(metadataOptions...))
 
 	return interceptors
 }

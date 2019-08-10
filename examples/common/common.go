@@ -2,6 +2,7 @@ package common
 
 import (
 	grpc_zap "github.com/hb-go/grpc-contrib/log/zap"
+	"github.com/hb-go/grpc-contrib/metadata"
 	log_zap "github.com/hb-go/pkg/log/zap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -23,6 +24,10 @@ func Logger(system string) error {
 	log_zap.ReplaceLogger(logger.WithOptions(zap.Fields(zap.String("system", system))))
 
 	return nil
+}
+
+func GatewayMetadataOptions() []metadata.Option {
+	return gatewayMetadataOptions()
 }
 
 func ClientInterceptors() []grpc.UnaryClientInterceptor {

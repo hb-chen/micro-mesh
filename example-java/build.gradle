@@ -1,0 +1,115 @@
+allprojects {
+    // tag::repositories[]
+    repositories {
+        //jcenter()
+        //mavenCentral()
+        maven {
+            //url "http://maven.aliyun.com/nexus/content/groups/public"
+            url("https://plugins.gradle.org/m2/")
+        }
+        maven {
+            url "https://dl.bintray.com/sixt/ja-micro"
+        }
+        maven {
+            url 'https://dl.bintray.com/palantir/releases' // docker-compose-rule is published on bintray
+        }
+    }
+    // end::repositories[]
+
+    ext {
+        springVersion = '4.3.4.RELEASE'
+        springBootVersion = '2.1.3.RELEASE'
+        springDataVersion = 'Ingalls-SR1'
+        springSessionVersion = '1.3.0.RELEASE'
+        springSecurityVersion = '4.2.2.RELEASE'
+        springSecurityOAuthVersion = '2.0.13.RELEASE'
+
+        grpcStarterVersion = '2.5.0.RELEASE'
+        consulStarterVersion = '2.1.2.RELEASE'
+
+        hibernateValidatorVersion = '5.4.0.Final'
+
+        mybatisVersion = '3.4.2'
+        mybatisSpringVersion = '1.3.1'
+        mybatisSpringBootVersion = '1.2.0'
+        mybatisGeneratorVersion = '1.3.2'
+        mybatisPlusVersion = '2.0.2'
+        mybatisPagehelper = '4.1.1'
+        mybatisMapper = '3.3.8'
+
+        mysqlVersion = '5.1.41'
+
+        jedisVersion = '2.9.0'
+        slf4jVersion = '1.7.24'
+        log4j2Version = '2.8.1'
+        jerseyVersion = '2.25.1'
+        assertjVersion = '3.6.1'
+        sitemeshVersion = '3.0.1'
+        guavaVersion = '21.0'
+        shiroVersion = '1.4.0-RC2'
+        druidVersion = '1.0.28'
+        okHttpVersion = '3.6.0'
+        jacksonVersion = '2.8.7'
+        asmVersion = '5.2'
+        aspectjVersion = '1.8.10'
+        ehcacheVersion = '2.10.3'
+        jodatimeVersion = '2.9.7'
+        javassistVersion = '3.21.0-GA'
+
+        commonsIoVersion = '2.5'
+        commonsLangVersion = '3.5'
+        commonsCodecVersion = '1.10'
+        commonsFileuploadVersion = '1.3.2'
+        commonsBeanutilsVersion = '1.9.3'
+        commonsCollectionsVersion = '3.2.2'
+        commonsPoolVersion = '2.4.2'
+
+        javaxJstlApiVersion = '1.2'
+        javaxServletApiVersion = '3.1.0'
+        javaxJspApiVersion = '2.3.0'
+
+        tomcatVersion = '8.5.11'
+    }
+
+    ext.versions = [
+            'protobufGradle': '0.8.3',
+            'jetty'         : '9.4.3.v20170317',
+            'protobuf'      : '3.2.0',
+            'guice'         : '4.1.0',
+            'kafka'         : '0.10.2.1',
+            'guava'         : '21.0',
+            'logback'       : '1.2.3',
+            'slf4j'         : '1.7.25',
+            'tracing'       : '0.21.0',
+            'powermock'     : '1.6.6',
+
+            'mahout' : '0.14.0',
+
+            'jaMicro' : '3.2.1',
+    ]
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    //统一编码为UTF-8
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    // 显示当前项目下所有用于 compile 的 jar.
+    task leftShift(description: 'Display all compile jars.') doLast {
+        configurations.compile.each { File file -> println file.name }
+    }
+}
+
+/**
+ * Gradle Wrapper版本
+ */
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10'
+}
+

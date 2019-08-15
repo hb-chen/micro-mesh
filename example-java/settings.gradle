@@ -1,0 +1,5 @@
+rootProject.name = 'example'
+
+include 'server'
+include 'client'
+include 'proto'

@@ -1,0 +1,24 @@
+archivesBaseName = 'server'
+
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+dependencies {
+    compile project(":proto")
+
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+
+    compile("net.devh:grpc-server-spring-boot-starter:${grpcStarterVersion}")
+
+    compile("org.springframework.cloud:spring-cloud-starter-consul-discovery:${consulStarterVersion}")
+    // compile("org.springframework.cloud:spring-cloud-starter-consul-all:${consulStarterVersion}")
+}

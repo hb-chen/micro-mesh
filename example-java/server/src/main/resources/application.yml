@@ -1,0 +1,27 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: mm-example
+  sleuth:
+    sampler:
+      probability: 1
+
+  cloud:
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}:${random.value}
+        serviceName: ${spring.application.name}
+        prefer-ip-address: true
+    service-registry:
+      auto-registration:
+        register-management: true
+
+grpc:
+  server:
+    port: 0
+
+

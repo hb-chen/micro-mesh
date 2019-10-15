@@ -44,6 +44,9 @@ func clientInterceptors() []grpc.UnaryClientInterceptor {
 		grpc_retry.WithPerRetryTimeout(time.Millisecond*100),
 	))
 
+	// metadata
+	interceptors = append(interceptors, metadata.UnaryClientInterceptor(metadataOptions...))
+
 	// tracing
 	interceptors = append(interceptors, grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(opentracing.GlobalTracer())))
 

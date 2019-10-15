@@ -10,7 +10,7 @@ require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/grpc-ecosystem/grpc-gateway v1.9.5
+	github.com/grpc-ecosystem/grpc-gateway v1.11.3
 	github.com/hb-go/grpc-contrib v0.0.0-20190809115636-90e6e3609fcd
 	github.com/hb-go/pkg v0.0.2-0.20190805134718-346b31e462e2
 	github.com/micro/go-micro v1.8.0

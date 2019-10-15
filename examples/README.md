@@ -87,7 +87,7 @@ docker build -t hbchen/micro-mesh-example-api:v0.0.4_istio .
 docker build -t hbchen/micro-mesh-example-srv:v0.0.4_istio .
 ```
 ### go-micro/k8s
-[deploy/k8s/g0-micro](/deploy/k8s/go-micro)
+[deploy/k8s/go-micro](/deploy/k8s/go-micro)
 
 ### Istio
 [deploy/k8s/istio](/deploy/k8s/istio)

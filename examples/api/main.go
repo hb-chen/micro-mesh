@@ -27,7 +27,7 @@ var (
 
 func init() {
 	flag.StringVar(&serveAddr, "serve_addr", ":9080", "serve address.")
-	flag.StringVar(&services, "services", `[{"name":"ExampleService1","version":"latest","services":[{"name":"ExampleService2","version":"latest","services":[]}]}]`, "remote address.")
+	flag.StringVar(&services, "services", `[{"name":"ExampleService","version":"latest","services":[{"name":"ExampleService","version":"latest","services":[]}]}]`, "service config.")
 	flag.BoolVar(&cmdHelp, "h", false, "help")
 	flag.Parse()
 }
@@ -45,25 +45,9 @@ func main() {
 		return
 	}
 
-	s := grpc.NewServer(
-		grpc_middleware.WithUnaryServerChain(
-			common.ServerInterceptors()...,
-		),
-		grpc_middleware.WithStreamServerChain(
-			grpc_recovery.StreamServerInterceptor(),
-		),
-	)
 	srv := service.Service{
 		Services: services,
 	}
-	pb.RegisterExampleServiceServer(s, &srv)
-
-	bcLis := bufconn.Listen(1024 * 1024)
-	go s.Serve(bcLis)
-
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
 
 	mux := runtime.NewServeMux(
 		// istio trace header
@@ -71,23 +55,55 @@ func main() {
 			common.GatewayMetadataOptions()...,
 		)),
 	)
-	err := pb.RegisterExampleServiceHandlerFromEndpoint(
-		ctx,
-		mux,
-		"",
-		[]grpc.DialOption{
-			grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-				return bcLis.Dial()
-			}),
-			grpc.WithDefaultCallOptions(),
-			grpc.WithChainUnaryInterceptor(
-				common.ClientInterceptors()...,
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	if true {
+		// grpc-gateway进程内调用
+		// grpc-gateway version ≥ v1.11.1
+		err := pb.RegisterExampleServiceHandlerServer(
+			ctx,
+			mux,
+			&srv,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		// bufonn
+		s := grpc.NewServer(
+			grpc_middleware.WithUnaryServerChain(
+				common.ServerInterceptors()...,
 			),
-			grpc.WithInsecure(),
-		},
-	)
-	if err != nil {
-		log.Fatal(err)
+			grpc_middleware.WithStreamServerChain(
+				grpc_recovery.StreamServerInterceptor(),
+			),
+		)
+		pb.RegisterExampleServiceServer(s, &srv)
+
+		bcLis := bufconn.Listen(1024 * 1024)
+		go s.Serve(bcLis)
+
+		err := pb.RegisterExampleServiceHandlerFromEndpoint(
+			ctx,
+			mux,
+			"",
+			[]grpc.DialOption{
+				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+					return bcLis.Dial()
+				}),
+				grpc.WithDefaultCallOptions(),
+				grpc.WithChainUnaryInterceptor(
+					common.ClientInterceptors()...,
+				),
+				grpc.WithInsecure(),
+			},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	log.Infof("http serve addr: %v", serveAddr)

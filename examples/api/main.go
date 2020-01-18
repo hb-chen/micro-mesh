@@ -3,20 +3,14 @@ package main
 import (
 	"context"
 	"flag"
-	"net"
 	"net/http"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/hb-go/grpc-contrib/metadata"
-	"github.com/hb-go/pkg/log"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/test/bufconn"
-
 	"github.com/hb-go/micro-mesh/examples/common"
 	"github.com/hb-go/micro-mesh/examples/service"
 	pb "github.com/hb-go/micro-mesh/proto"
+	"github.com/hb-go/pkg/log"
 )
 
 var (
@@ -60,50 +54,15 @@ func main() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	if true {
-		// grpc-gateway进程内调用
-		// grpc-gateway version ≥ v1.11.1
-		err := pb.RegisterExampleServiceHandlerServer(
-			ctx,
-			mux,
-			&srv,
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		// bufonn
-		s := grpc.NewServer(
-			grpc_middleware.WithUnaryServerChain(
-				common.ServerInterceptors()...,
-			),
-			grpc_middleware.WithStreamServerChain(
-				grpc_recovery.StreamServerInterceptor(),
-			),
-		)
-		pb.RegisterExampleServiceServer(s, &srv)
-
-		bcLis := bufconn.Listen(1024 * 1024)
-		go s.Serve(bcLis)
-
-		err := pb.RegisterExampleServiceHandlerFromEndpoint(
-			ctx,
-			mux,
-			"",
-			[]grpc.DialOption{
-				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-					return bcLis.Dial()
-				}),
-				grpc.WithDefaultCallOptions(),
-				grpc.WithChainUnaryInterceptor(
-					common.ClientInterceptors()...,
-				),
-				grpc.WithInsecure(),
-			},
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
+	// grpc-gateway进程内调用
+	// grpc-gateway version ≥ v1.11.1
+	err := pb.RegisterExampleServiceHandlerServer(
+		ctx,
+		mux,
+		&srv,
+	)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	log.Infof("http serve addr: %v", serveAddr)

@@ -14,7 +14,7 @@ import (
 	_ "github.com/hb-go/grpc-contrib/registry/micro"
 	"github.com/hb-go/pkg/log"
 	mregistry "github.com/micro/go-micro/registry"
-	"github.com/micro/go-micro/registry/consul"
+	"github.com/micro/go-micro/registry/etcd"
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 )
@@ -27,8 +27,7 @@ var (
 )
 
 func init() {
-	// mregistry.DefaultRegistry = consul.NewRegistry(consul.TCPCheck(time.Second * 5))
-	mregistry.DefaultRegistry = consul.NewRegistry()
+	mregistry.DefaultRegistry = etcd.NewRegistry()
 }
 
 func gatewayMetadataOptions() []metadata.Option {

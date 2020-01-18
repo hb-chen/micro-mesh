@@ -1,20 +1,20 @@
 # gRPC微服务示例
 
 ## 服务发现
-默认使用consul做服务发现
+默认使用Etcd做服务发现
 
 ## Local测试
 
-> 需要consul服务
+> 需要[Etcd](https://etcd.io/)服务
 
 ### 运行
 ```bash
 # api
-$ go run -tags "dev" main.go -serve_addr :9080 -services '[{"name":"ExampleService1","version":"latest","services":[{"name":"ExampleService2","version":"latest","services":[]}]}]'
+go run -tags "dev" main.go -serve_addr :9080 -services '[{"name":"ExampleService1","version":"latest","services":[{"name":"ExampleService2","version":"latest","services":[]}]}]'
  
 # srv
-$ go run -tags "dev" main.go -service_name ExampleService1 -service_version latest
-$ go run -tags "dev" main.go -service_name ExampleService2 -service_version latest
+go run -tags "dev" main.go -service_name ExampleService1 -service_version latest
+go run -tags "dev" main.go -service_name ExampleService2 -service_version latest
 
 ```
 

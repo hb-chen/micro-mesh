@@ -4,29 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"sync"
-	"time"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
-	"github.com/hb-go/grpc-contrib/client"
 	"github.com/hb-go/grpc-contrib/registry"
 	"github.com/hb-go/pkg/dispatcher"
 	"github.com/hb-go/pkg/log"
 	gopool "github.com/hb-go/pkg/pool"
 	"google.golang.org/grpc"
 
+	"github.com/hb-go/micro-mesh/client"
 	"github.com/hb-go/micro-mesh/examples/common"
 	pb "github.com/hb-go/micro-mesh/proto"
 )
 
-var (
-	pool *client.Pool
-)
-
 const ServicePrefix = "com.hbchen."
-
-func init() {
-	pool = client.NewPool(100, time.Second*30)
-}
 
 type Service struct {
 	Services string
@@ -88,13 +79,6 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 		chain.Ctx = string(incoming)
 	}
 
-	opts := []grpc.DialOption{
-		grpc.WithChainUnaryInterceptor(common.ClientInterceptors()...),
-		grpc.WithInsecure(),
-		grpc.WithBalancerName("round_robin"),
-		grpc.WithBlock(),
-	}
-
 	gp := gopool.NewGoroutinePool(len(in.Services), false)
 	gp.AddWorkers(2) // worker num=3
 	dp := dispatcher.NewDispatcher(gp)
@@ -108,19 +92,20 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 			}
 		}()
 
-		sd := pb.ServiceDescExampleService()
+		desc := pb.ServiceDescExampleService()
 		serviceName := ServicePrefix + req.Name
-		sd.ServiceName = serviceName
-		addr := registry.NewTarget(&sd, registry.WithAddr(":9080"), registry.WithVersion(req.Version))
-		log.Debugf("addr: %v", addr)
 
-		cc1, err := pool.Get(addr, opts...)
+		cc, closer, err := client.Client(
+			&desc,
+			client.WithName(serviceName),
+			client.WithRegistryOptions(registry.WithVersion(req.Version)),
+			client.WithDialOptions(grpc.WithChainUnaryInterceptor(common.ClientInterceptors()...)),
+		)
 		if err != nil {
-			log.Errorf("conn pool error: %v", err)
-			return err
+			log.Errorf("example service get client error: %v", err)
 		}
 
-		rsp1, err := pb.NewExampleServiceClient(cc1.GetCC()).Call(ctx, req)
+		resp, err := pb.NewExampleServiceClient(cc).Call(ctx, req)
 		if err != nil {
 			log.Errorf("example service client call error: %v", err)
 			return err
@@ -129,10 +114,12 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 		}
 
 		mu.Lock()
-		chain.Chain = append(chain.Chain, rsp1.Chain...)
+		chain.Chain = append(chain.Chain, resp.Chain...)
 		mu.Unlock()
 
-		pool.Put(addr, cc1, err)
+		if err := closer.Close(); err != nil {
+			log.Errorf("client close error: %v", err)
+		}
 		return nil
 	}
 
@@ -148,7 +135,9 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 		})
 	}
 	wg.Add(len(handlers))
-	dp.Dispatch(handlers...)
+	if err := dp.Dispatch(handlers...); err != nil {
+		log.Errorf("handler dispatch error: %v", err)
+	}
 	wg.Wait()
 
 	rsp.Chain = append(rsp.Chain, chain)

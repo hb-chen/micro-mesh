@@ -18,8 +18,8 @@ Micro Mesh
 
 ### TODO
 
-- [hb-go/grpc-gateway](https://github.com/hb-go/grpc-gateway)
-    - [x] `gen-grpc-gateway`扩展，支持gRPC服务本地调用，在service中启动http server
+- [hb-chen/grpc-gateway](https://github.com/hb-chen/grpc-gateway)
+    - [x] `gen-grpc-gateway`扩展，支持gRPC服务本地调用，在`service`中启动http server，已在[v1.10.0](https://github.com/grpc-ecosystem/grpc-gateway/releases/tag/v1.10.0)并入社区版本
     - [ ] `gen-istio-gateway`通过grpc-gateway API自动生成istio gateway的`.yaml`配置
     - [ ] `swagger-codegen`
 - Istio部署
@@ -43,15 +43,20 @@ Micro Mesh
 #### 安装
 
 ```bash
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
+
+# 自定义代码生成
+# 1.导出grpc.ServiceDesc
+# 2.注册中心接口
 go get -u github.com/hb-go/grpc-contrib/protoc-gen-hb-grpc
 ```
 
 ***~~使用fork grpc-gateway的protoc-gen-grpc-gateway~~***
 ```bash
 cd $GOPATH/src/github.com/grpc-ecosystem
-git clone github.com/hb-go/grpc-gateway
+git clone github.com/hb-chen/grpc-gateway
 make bin/protoc-gen-grpc-gateway
 mv bin/protoc-gen-grpc-gateway $GOPATH/bin/protoc-gen-grpc-gateway
 ```

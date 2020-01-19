@@ -2,6 +2,8 @@ syntax = "proto3";
 package com.hbchen;
 option go_package = "proto";
 
+import "github.com/envoyproxy/protoc-gen-validate/validate/validate.proto";
+
 service ExampleService {
     rpc ApiCall (ApiRequest) returns (Response) {
     }
@@ -10,12 +12,18 @@ service ExampleService {
 }
 
 message ApiRequest {
-    string name = 1;
-    string services = 2;
+    string name = 1 [(validate.rules).string = {
+                        min_bytes: 4, max_bytes: 32
+                    }];
+    string services = 2 [(validate.rules).string = {
+                        max_bytes: 1024
+                       }];
 }
 
 message Request {
-    string name = 1;
+    string name = 1 [(validate.rules).string = {
+                        min_bytes: 4, max_bytes: 32
+                    }];
     string version = 2;
     repeated Service services = 3;
 }

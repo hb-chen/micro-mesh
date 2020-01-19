@@ -35,6 +35,11 @@ func rangeService(services []*pb.Service) {
 func (s *Service) ApiCall(ctx context.Context, in *pb.ApiRequest) (*pb.Response, error) {
 	log.Debugf("ApiCall() received: %v", in.Name)
 
+	// TODO Gateway自动拦截方案
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+
 	servicesJson := s.Services
 	if len(in.Services) > 0 {
 		servicesJson = in.Services

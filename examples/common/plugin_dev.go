@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/hb-go/grpc-contrib/metadata"
 	_ "github.com/hb-go/grpc-contrib/registry/micro"
 	"github.com/hb-go/pkg/log"
@@ -17,6 +18,8 @@ import (
 	"github.com/micro/go-micro/registry/etcd"
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -25,6 +28,10 @@ var (
 		metadata.WithHeader("uber-trace-id"),
 	}
 )
+
+type validator interface {
+	Validate() error
+}
 
 func init() {
 	mregistry.DefaultRegistry = etcd.NewRegistry()
@@ -49,6 +56,17 @@ func clientInterceptors() []grpc.UnaryClientInterceptor {
 	// tracing
 	interceptors = append(interceptors, grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(opentracing.GlobalTracer())))
 
+	// Options
+	// Request参数自动验证
+	interceptors = append(interceptors, func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		if v, ok := req.(validator); ok {
+			if err := v.Validate(); err != nil {
+				return status.Errorf(codes.InvalidArgument, err.Error())
+			}
+		}
+		return invoker(ctx, method, req, reply, cc, opts...)
+	})
+
 	interceptors = append(interceptors, func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		log.Infof("client interceptor method: %v", method)
 		// breaker hystrix
@@ -71,6 +89,9 @@ func serverInterceptors() []grpc.UnaryServerInterceptor {
 
 	// tracing
 	interceptors = append(interceptors, grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(opentracing.GlobalTracer())))
+
+	// 参数自动验证
+	interceptors = append(interceptors, grpc_validator.UnaryServerInterceptor())
 
 	return interceptors
 }

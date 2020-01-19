@@ -16,6 +16,21 @@ Micro Mesh
 - [TODO](#TODO)
 - [Protoc](#Protoc)
 
+## 框架
+
+- registry
+    - istio
+    - go-micro
+        - k8s
+        - consul
+        - etcd
+- tracing
+    - opentracing
+        - jaeger + ES / kafka
+- metrics
+    - prometheus
+        - ES / kafka
+
 ### TODO
 
 - [hb-chen/grpc-gateway](https://github.com/hb-chen/grpc-gateway)
@@ -41,6 +56,8 @@ Micro Mesh
 ### Protoc
 
 #### 安装
+
+[envoyproxy/protoc-gen-validate](https://github.com/envoyproxy/protoc-gen-validate#installation)
 
 ```bash
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
@@ -68,10 +85,11 @@ mv bin/protoc-gen-grpc-gateway $GOPATH/bin/protoc-gen-grpc-gateway
 # grpc-gateway
 # swagger
 # hb-grpc
-protoc -I./ \
+protoc -I$GOPATH/src/ -I./ \
 --go_out=plugins=grpc:. \
 --grpc-gateway_out=logtostderr=true,grpc_api_configuration=proto/gateway.yaml:. \
 --swagger_out=logtostderr=true,grpc_api_configuration=proto/gateway.yaml:. \
+--validate_out=lang=go:. \
 --hb-grpc_out=plugins=registry+desc:. \
 proto/*.proto
 ```

@@ -102,7 +102,7 @@ spec:
   selector:
     app: com.hbchen.api
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-api-v1

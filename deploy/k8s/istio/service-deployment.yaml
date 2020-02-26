@@ -14,7 +14,7 @@ spec:
   selector:
     app: com.hbchen.ExampleService1
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-srv-1-v1
@@ -58,7 +58,7 @@ spec:
   selector:
     app: com.hbchen.ExampleService2
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-srv-2-v1

@@ -37,7 +37,7 @@ spec:
           "-service_name=ExampleService1",
           "-service_version=v1"
         ]
-          image: hbchen/micro-mesh-example-srv:v0.0.4_istio
+        image: hbchen/micro-mesh-example-srv:v0.0.4_istio
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

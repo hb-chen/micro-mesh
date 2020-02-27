@@ -11,7 +11,7 @@ spec:
       name: http
       protocol: http
     hosts:
-    - "hbchen.com"
+    - "istio.k8s.hbchen.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,7 +19,7 @@ metadata:
   name: mm-example-api
 spec:
   hosts:
-  - "hbchen.com"
+  - "istio.k8s.hbchen.com"
   gateways:
   - mm-example-gateway # gateway name
   http:

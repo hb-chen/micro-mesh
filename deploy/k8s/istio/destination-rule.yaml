@@ -6,7 +6,7 @@ spec:
   host: com-hbchen-api.default.svc.cluster.local # service FQDN
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -20,7 +20,7 @@ spec:
   host: com-hbchen-exampleservice1.default.svc.cluster.local # service FQDN
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -34,7 +34,7 @@ spec:
   host: com-hbchen-exampleservice2.default.svc.cluster.local # service FQDN
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:

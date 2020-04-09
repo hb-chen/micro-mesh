@@ -52,7 +52,10 @@ func serverInterceptors() []grpc.UnaryServerInterceptor {
 	interceptors := make([]grpc.UnaryServerInterceptor, 0, 1)
 
 	// recovery
-	interceptors = append(interceptors, grpc_recovery.UnaryServerInterceptor())
+	interceptors = append(interceptors, grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandlerContext(func(ctx context.Context, p interface{}) (err error) {
+		log.Errorf("grpc_recovery: %+v", p)
+		return status.Errorf(codes.Internal, "%s", p)
+	})))
 
 	return interceptors
 }

@@ -17,6 +17,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
 
+    // https://github.com/yidongnan/grpc-spring-boot-starter
     compile("net.devh:grpc-client-spring-boot-starter:${grpcStarterVersion}")
 
     compile("org.springframework.cloud:spring-cloud-starter-consul-discovery:${consulStarterVersion}")

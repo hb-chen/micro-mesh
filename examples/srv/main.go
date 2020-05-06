@@ -8,6 +8,7 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/hb-go/grpc-contrib/registry"
@@ -53,22 +54,25 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	log.Infof("registry %v",registry.DefaultRegistry)
+	log.Infof("registry %v", registry.DefaultRegistry)
 
 	// 服务注册
+	example := pb.RegistryServiceExampleService
 	if len(serviceName) > 0 {
-		sd := pb.ServiceDescExampleService()
-		sd.ServiceName = service.ServicePrefix + serviceName
-		if err := registry.Register(&sd, registry.WithVersion(serviceVersion), registry.WithAddr(lis.Addr().String())); err != nil {
-			log.Fatal(err)
-		}
-	} else if err := pb.RegisterExampleService(registry.WithVersion(serviceVersion), registry.WithAddr(lis.Addr().String())); err != nil {
-		log.Fatal(err)
+		example.Name = service.ServicePrefix + serviceName
 	}
+	example.Version = serviceVersion
+	example.Nodes = []*registry.Node{
+		&registry.Node{
+			Id:      example.Name + "-" + uuid.New().String(),
+			Address: lis.Addr().String(),
+		},
+	}
+	registry.Register(&example)
 
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
-			common.ServerInterceptors()...
+			common.ServerInterceptors()...,
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(),
@@ -94,7 +98,10 @@ func main() {
 			log.Infof("receive signal: %v", sig.String())
 			s.GracefulStop()
 		}
-		registry.Deregister(nil)
+
+		// 注销服务
+		registry.Deregister(&example)
+
 		wg.Done()
 	}(wg)
 

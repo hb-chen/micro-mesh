@@ -6,13 +6,13 @@ import (
 	"sync"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
+	"github.com/hb-go/grpc-contrib/client"
 	"github.com/hb-go/grpc-contrib/registry"
 	"github.com/hb-go/pkg/dispatcher"
 	"github.com/hb-go/pkg/log"
 	gopool "github.com/hb-go/pkg/pool"
 	"google.golang.org/grpc"
 
-	"github.com/hb-go/micro-mesh/client"
 	"github.com/hb-go/micro-mesh/examples/common"
 	pb "github.com/hb-go/micro-mesh/proto"
 )
@@ -97,17 +97,18 @@ func (s *Service) handler(ctx context.Context, in *pb.Request) (*pb.Response, er
 			}
 		}()
 
-		desc := pb.ServiceDescExampleService()
+		desc := pb.RegistryServiceExampleService
 		serviceName := ServicePrefix + req.Name
 
 		cc, closer, err := client.Client(
 			&desc,
 			client.WithName(serviceName),
-			client.WithRegistryOptions(registry.WithVersion(req.Version)),
+			client.WithRegistryOptions(registry.Versions(req.Version)),
 			client.WithDialOptions(grpc.WithChainUnaryInterceptor(common.ClientInterceptors()...)),
 		)
 		if err != nil {
 			log.Errorf("example service get client error: %v", err)
+			return err
 		}
 
 		resp, err := pb.NewExampleServiceClient(cc).Call(ctx, req)

@@ -36,18 +36,18 @@ func ServiceDescExampleService() grpc.ServiceDesc {
 	return _ExampleService_serviceDesc
 }
 
-// gRPC Registry
+// gRPC registry service
 // github.com/hb-go/grpc-contrib/registry
 
-// ExampleService registry
-func TargetExampleService(opts ...registry.Option) string {
-	return registry.NewTarget(&_ExampleService_serviceDesc, opts...)
-}
-
-func RegisterExampleService(opts ...registry.Option) error {
-	return registry.Register(&_ExampleService_serviceDesc, opts...)
-}
-
-func DeregisterExampleService(opts ...registry.Option) {
-	registry.Deregister(&_ExampleService_serviceDesc, opts...)
+// ExampleService registry service
+var RegistryServiceExampleService = registry.Service{
+	Name: _ExampleService_serviceDesc.ServiceName,
+	Methods: []*registry.Method{
+		&registry.Method{
+			Name: "ApiCall",
+		},
+		&registry.Method{
+			Name: "Call",
+		},
+	},
 }

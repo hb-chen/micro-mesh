@@ -12,10 +12,10 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/hb-go/grpc-contrib/metadata"
-	_ "github.com/hb-go/grpc-contrib/registry/micro"
+	"github.com/hb-go/grpc-contrib/registry"
+	"github.com/hb-go/grpc-contrib/registry/cache"
+	"github.com/hb-go/grpc-contrib/registry/etcd"
 	"github.com/hb-go/pkg/log"
-	mregistry "github.com/micro/go-micro/registry"
-	"github.com/micro/go-micro/registry/etcd"
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -34,7 +34,9 @@ type validator interface {
 }
 
 func init() {
-	mregistry.DefaultRegistry = etcd.NewRegistry()
+	// 目前仅支持 Etcd
+	registry.DefaultRegistry = cache.New(etcd.NewRegistry())
+	registry.RegisterBuilder(registry.DefaultRegistry)
 }
 
 func gatewayMetadataOptions() []metadata.Option {

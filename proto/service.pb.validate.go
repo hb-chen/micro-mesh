@@ -121,10 +121,10 @@ func (m *Request) Validate() error {
 		return nil
 	}
 
-	if l := len(m.GetName()); l < 1 || l > 4 {
+	if l := len(m.GetName()); l < 4 || l > 32 {
 		return RequestValidationError{
 			field:  "Name",
-			reason: "value length must be between 1 and 4 bytes, inclusive",
+			reason: "value length must be between 4 and 32 bytes, inclusive",
 		}
 	}
 

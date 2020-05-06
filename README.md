@@ -84,12 +84,14 @@ mv bin/protoc-gen-grpc-gateway $GOPATH/bin/protoc-gen-grpc-gateway
 # go+grpc
 # grpc-gateway
 # swagger
+# hbgrpc-gateway
 # hb-grpc
 protoc -I$GOPATH/src/ -I./ \
 --go_out=plugins=grpc:. \
 --grpc-gateway_out=logtostderr=true,grpc_api_configuration=proto/gateway.yaml:. \
 --swagger_out=logtostderr=true,grpc_api_configuration=proto/gateway.yaml:. \
 --validate_out=lang=go:. \
+--hb-grpc-gateway_out=logtostderr=true,grpc_api_configuration=proto/gateway.yaml:. \
 --hb-grpc_out=plugins=registry+desc:. \
 proto/*.proto
 ```

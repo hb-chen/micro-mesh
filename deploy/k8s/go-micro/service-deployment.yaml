@@ -1,12 +1,16 @@
 ##################################################################################################
 # SRV-1 service
 ##################################################################################################
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-srv-1-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: com.hbchen.ExampleService1
+      version: v1
   template:
     metadata:
       labels:
@@ -30,12 +34,16 @@ spec:
 ##################################################################################################
 # SRV-2 service
 ##################################################################################################
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-srv-2-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: com.hbchen.ExampleService2
+      version: v1
   template:
     metadata:
       labels:
@@ -75,12 +83,16 @@ spec:
     app: mm-example-api
   type: LoadBalancer
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mm-example-api-v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mm-example-api
+      version: v1
   template:
     metadata:
       labels:

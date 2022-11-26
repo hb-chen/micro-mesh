@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: micro-mesh-ingress
+  labels:
+    app: mm-example-api
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "micro.k8s.hbchen.com"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mm-example-api
+                port:
+                  number: 80
